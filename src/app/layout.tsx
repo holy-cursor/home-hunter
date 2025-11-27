@@ -1,0 +1,40 @@
+import type { Metadata } from "next";
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
+
+const geistSans = Geist({
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: "House Hunter | OAU Student Accommodation",
+  description: "Find the best off-campus hostels and apartments near Obafemi Awolowo University (OAU), Ile-Ife. Verified listings for students.",
+  keywords: ["OAU", "Obafemi Awolowo University", "Ile-Ife", "Student Housing", "Hostels", "Accommodation", "Off-campus"],
+  openGraph: {
+    title: "House Hunter | OAU Student Accommodation",
+    description: "Secure and affordable student housing in Ile-Ife.",
+    type: "website",
+  },
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="en">
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        {children}
+      </body>
+    </html>
+  );
+}
