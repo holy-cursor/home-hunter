@@ -52,20 +52,20 @@ export default function BuyerSignup() {
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8 selection:bg-[#FFC72C] selection:text-[#002147]">
             <div className="sm:mx-auto sm:w-full sm:max-w-md">
                 <Link href="/" className="flex justify-center items-center gap-2 mb-6">
-                    <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
-                        <Home className="w-5 h-5 text-white" />
+                    <div className="w-8 h-8 bg-[#002147] rounded-lg flex items-center justify-center">
+                        <Home className="w-5 h-5 text-[#FFC72C]" />
                     </div>
-                    <span className="text-xl font-bold text-slate-900">House Hunter</span>
+                    <span className="text-xl font-bold text-[#002147]">House Hunter</span>
                 </Link>
                 <h2 className="text-center text-3xl font-bold tracking-tight text-slate-900">
                     Find Your Home
                 </h2>
                 <p className="mt-2 text-center text-sm text-slate-600">
                     Or{" "}
-                    <Link href="/auth/signup/seller" className="font-medium text-emerald-600 hover:text-emerald-500">
+                    <Link href="/auth/signup/seller" className="font-medium text-[#002147] hover:text-[#FFC72C] transition-colors">
                         become an agent?
                     </Link>
                 </p>
@@ -94,7 +94,7 @@ export default function BuyerSignup() {
                                     name="name"
                                     type="text"
                                     required
-                                    className="block w-full pl-10 sm:text-sm border-slate-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 p-2.5 border"
+                                    className="block w-full pl-10 sm:text-sm border-slate-300 rounded-lg focus:ring-[#002147] focus:border-[#002147] p-2.5 border"
                                     placeholder="Sarah Student"
                                     value={formData.name}
                                     onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -116,7 +116,7 @@ export default function BuyerSignup() {
                                     type="email"
                                     autoComplete="email"
                                     required
-                                    className="block w-full pl-10 sm:text-sm border-slate-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 p-2.5 border"
+                                    className="block w-full pl-10 sm:text-sm border-slate-300 rounded-lg focus:ring-[#002147] focus:border-[#002147] p-2.5 border"
                                     placeholder="sarah@example.com"
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
@@ -138,7 +138,7 @@ export default function BuyerSignup() {
                                     type="password"
                                     required
                                     minLength={6}
-                                    className="block w-full pl-10 sm:text-sm border-slate-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 p-2.5 border"
+                                    className="block w-full pl-10 sm:text-sm border-slate-300 rounded-lg focus:ring-[#002147] focus:border-[#002147] p-2.5 border"
                                     placeholder="••••••••"
                                     value={formData.password}
                                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
@@ -151,7 +151,7 @@ export default function BuyerSignup() {
                                 id="isStudent"
                                 name="isStudent"
                                 type="checkbox"
-                                className="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-slate-300 rounded"
+                                className="h-4 w-4 text-[#002147] focus:ring-[#002147] border-slate-300 rounded"
                                 checked={formData.isStudent}
                                 onChange={(e) => setFormData({ ...formData, isStudent: e.target.checked })}
                             />
@@ -172,7 +172,7 @@ export default function BuyerSignup() {
                                     <select
                                         id="studentLevel"
                                         name="studentLevel"
-                                        className="block w-full pl-10 sm:text-sm border-slate-300 rounded-lg focus:ring-emerald-500 focus:border-emerald-500 p-2.5 border appearance-none"
+                                        className="block w-full pl-10 sm:text-sm border-slate-300 rounded-lg focus:ring-[#002147] focus:border-[#002147] p-2.5 border appearance-none"
                                         value={formData.studentLevel}
                                         onChange={(e) => setFormData({ ...formData, studentLevel: e.target.value })}
                                     >
@@ -189,7 +189,7 @@ export default function BuyerSignup() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full flex justify-center items-center gap-2 py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
+                            className="w-full flex justify-center items-center gap-2 py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-[#002147] bg-[#FFC72C] hover:bg-[#ffcf4d] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#FFC72C] disabled:opacity-50 disabled:cursor-not-allowed transition-all font-bold"
                         >
                             {isLoading ? (
                                 <>

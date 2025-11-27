@@ -10,6 +10,8 @@
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --color-oau-blue: #002147;
+  --color-oau-gold: #FFC72C;
 }
 
 @media (prefers-color-scheme: dark) {

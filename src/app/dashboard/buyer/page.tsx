@@ -39,27 +39,27 @@ export default function BuyerDashboard() {
         fetchData();
     }, [router]);
 
-    if (isLoading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin text-emerald-600" size={32} /></div>;
+    if (isLoading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin text-[#002147]" size={32} /></div>;
     if (!user) return null;
 
     return (
-        <div className="min-h-screen bg-slate-50">
+        <div className="min-h-screen bg-slate-50 selection:bg-[#FFC72C] selection:text-[#002147]">
 
             {/* Header */}
             <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center py-4">
                         <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center">
-                                <Home className="w-5 h-5 text-white" />
+                            <div className="w-8 h-8 bg-[#002147] rounded-lg flex items-center justify-center">
+                                <Home className="w-5 h-5 text-[#FFC72C]" />
                             </div>
-                            <span className="text-xl font-bold text-slate-900">House Hunter</span>
+                            <span className="text-xl font-bold text-[#002147]">House Hunter</span>
                         </div>
 
                         <div className="flex items-center gap-4">
                             <Link
                                 href="/explore"
-                                className="text-slate-600 hover:text-emerald-600 transition-colors text-sm font-medium"
+                                className="text-slate-600 hover:text-[#002147] transition-colors text-sm font-medium"
                             >
                                 Browse Apartments
                             </Link>
@@ -95,7 +95,7 @@ export default function BuyerDashboard() {
                             <div className="px-6 py-12 text-center">
                                 <MessageSquare className="w-12 h-12 text-slate-300 mx-auto mb-3" />
                                 <p className="text-slate-500">No messages yet</p>
-                                <Link href="/explore" className="text-emerald-600 font-medium hover:underline mt-2 inline-block">
+                                <Link href="/explore" className="text-[#002147] font-medium hover:underline mt-2 inline-block">
                                     Start exploring apartments
                                 </Link>
                             </div>
@@ -120,7 +120,7 @@ export default function BuyerDashboard() {
                                         </div>
                                         <Link
                                             href={`/dashboard/buyer/chat/${chat.id}`}
-                                            className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition-all"
+                                            className="px-4 py-2 bg-[#002147] hover:bg-[#001835] text-white rounded-lg text-sm font-medium transition-all"
                                         >
                                             Open Chat
                                         </Link>
