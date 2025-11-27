@@ -64,6 +64,12 @@ export default function BuyerSignup() {
                     Find Your Home
                 </h2>
                 <p className="mt-2 text-center text-sm text-slate-600">
+                    Already have an account?{" "}
+                    <Link href="/auth/login/buyer" className="font-medium text-[#002147] hover:text-[#FFC72C] transition-colors">
+                        Log in here
+                    </Link>
+                </p>
+                <p className="mt-1 text-center text-sm text-slate-600">
                     Or{" "}
                     <Link href="/auth/signup/seller" className="font-medium text-[#002147] hover:text-[#FFC72C] transition-colors">
                         become an agent?

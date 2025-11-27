@@ -4,18 +4,15 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { store } from "@/lib/store";
-import { Loader2, UserCheck, Mail, Shield, ArrowRight, Home, Lock } from "lucide-react";
+import { Loader2, Home, Mail, Lock, ArrowRight } from "lucide-react";
 
-export default function SellerSignup() {
+export default function BuyerLogin() {
     const router = useRouter();
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
     const [formData, setFormData] = useState({
-        name: "",
         email: "",
         password: "",
-        isStudent: false,
-        verificationId: "",
     });
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -24,22 +21,24 @@ export default function SellerSignup() {
         setError("");
 
         try {
-            const { user, error } = await store.registerUser({
-                name: formData.name,
-                email: formData.email,
-                role: "seller",
-                isStudent: formData.isStudent,
-                bvnVerified: true, // Mock verification for now
-            }, formData.password);
+            const { data, error: loginError } = await store.login(formData.email, formData.password);
 
-            if (error) {
-                setError(error.message || "Failed to create account");
+            if (loginError) {
+                setError(loginError.message || "Failed to log in");
                 setIsLoading(false);
                 return;
             }
 
-            if (user) {
-                router.push("/profile/setup");
+            if (data.user) {
+                // Verify user role
+                const currentUser = await store.getCurrentUser();
+                if (currentUser?.role !== 'buyer') {
+                    setError("This account is not registered as a buyer. Please use the seller login.");
+                    await store.logout();
+                    setIsLoading(false);
+                    return;
+                }
+                router.push("/dashboard/buyer");
             }
         } catch (err) {
             setError("An unexpected error occurred");
@@ -57,18 +56,12 @@ export default function SellerSignup() {
                     <span className="text-xl font-bold text-[#002147]">House Hunter</span>
                 </Link>
                 <h2 className="text-center text-3xl font-bold tracking-tight text-slate-900">
-                    Become an Agent
+                    Welcome Back
                 </h2>
                 <p className="mt-2 text-center text-sm text-slate-600">
-                    Already have an account?{" "}
-                    <Link href="/auth/login/seller" className="font-medium text-[#002147] hover:text-[#FFC72C] transition-colors">
-                        Log in here
-                    </Link>
-                </p>
-                <p className="mt-1 text-center text-sm text-slate-600">
-                    Or{" "}
+                    Don't have an account?{" "}
                     <Link href="/auth/signup/buyer" className="font-medium text-[#002147] hover:text-[#FFC72C] transition-colors">
-                        looking for an apartment?
+                        Sign up here
                     </Link>
                 </p>
             </div>
@@ -82,27 +75,6 @@ export default function SellerSignup() {
                                 {error}
                             </div>
                         )}
-
-                        <div>
-                            <label htmlFor="name" className="block text-sm font-medium text-slate-700">
-                                Full Name
-                            </label>
-                            <div className="mt-1 relative rounded-md shadow-sm">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <UserCheck className="h-5 w-5 text-slate-400" />
-                                </div>
-                                <input
-                                    id="name"
-                                    name="name"
-                                    type="text"
-                                    required
-                                    className="block w-full pl-10 sm:text-sm border-slate-300 rounded-lg focus:ring-[#002147] focus:border-[#002147] p-2.5 border"
-                                    placeholder="John Doe"
-                                    value={formData.name}
-                                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                                />
-                            </div>
-                        </div>
 
                         <div>
                             <label htmlFor="email" className="block text-sm font-medium text-slate-700">
@@ -119,7 +91,7 @@ export default function SellerSignup() {
                                     autoComplete="email"
                                     required
                                     className="block w-full pl-10 sm:text-sm border-slate-300 rounded-lg focus:ring-[#002147] focus:border-[#002147] p-2.5 border"
-                                    placeholder="john@example.com"
+                                    placeholder="sarah@example.com"
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                 />
@@ -139,52 +111,12 @@ export default function SellerSignup() {
                                     name="password"
                                     type="password"
                                     required
-                                    minLength={6}
                                     className="block w-full pl-10 sm:text-sm border-slate-300 rounded-lg focus:ring-[#002147] focus:border-[#002147] p-2.5 border"
                                     placeholder="••••••••"
                                     value={formData.password}
                                     onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                                 />
                             </div>
-                        </div>
-
-                        <div className="flex items-center">
-                            <input
-                                id="isStudent"
-                                name="isStudent"
-                                type="checkbox"
-                                className="h-4 w-4 text-[#002147] focus:ring-[#002147] border-slate-300 rounded"
-                                checked={formData.isStudent}
-                                onChange={(e) => setFormData({ ...formData, isStudent: e.target.checked })}
-                            />
-                            <label htmlFor="isStudent" className="ml-2 block text-sm text-slate-900">
-                                I am a student at OAU
-                            </label>
-                        </div>
-
-                        <div>
-                            <label htmlFor="verification" className="block text-sm font-medium text-slate-700">
-                                BVN or NIN
-                            </label>
-                            <div className="mt-1 relative rounded-md shadow-sm">
-                                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                                    <Shield className="h-5 w-5 text-slate-400" />
-                                </div>
-                                <input
-                                    id="verification"
-                                    name="verification"
-                                    type="text"
-                                    required
-                                    className="block w-full pl-10 sm:text-sm border-slate-300 rounded-lg focus:ring-[#002147] focus:border-[#002147] p-2.5 border"
-                                    placeholder="Enter your BVN or NIN"
-                                    value={formData.verificationId}
-                                    onChange={(e) => setFormData({ ...formData, verificationId: e.target.value })}
-                                />
-                            </div>
-                            <p className="mt-2 text-xs text-slate-500 flex items-center gap-1">
-                                <Shield className="w-3 h-3" />
-                                Required for agent verification
-                            </p>
                         </div>
 
                         <button
@@ -195,15 +127,21 @@ export default function SellerSignup() {
                             {isLoading ? (
                                 <>
                                     <Loader2 className="animate-spin" size={18} />
-                                    <span>Creating Account...</span>
+                                    <span>Logging in...</span>
                                 </>
                             ) : (
                                 <>
-                                    <span>Create Account</span>
+                                    <span>Log In</span>
                                     <ArrowRight size={18} />
                                 </>
                             )}
                         </button>
+
+                        <div className="text-center">
+                            <Link href="/auth/signup/seller" className="text-sm text-slate-600 hover:text-[#002147] transition-colors">
+                                Are you an agent? <span className="font-medium">Login as seller</span>
+                            </Link>
+                        </div>
                     </form>
                 </div>
             </div>
