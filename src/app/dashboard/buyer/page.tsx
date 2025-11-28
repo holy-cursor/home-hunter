@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { store, User, Chat, Listing } from "@/lib/store";
-import { MessageSquare, Home, LogOut, Loader2 } from "lucide-react";
+import { MessageSquare, Home, LogOut, Loader2, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function BuyerDashboard() {
@@ -46,39 +46,48 @@ export default function BuyerDashboard() {
         <div className="min-h-screen bg-slate-50 selection:bg-[#FFC72C] selection:text-[#002147]">
 
             {/* Header */}
-            <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
+            <header className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center py-4">
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 bg-[#002147] rounded-lg flex items-center justify-center">
+                        <Link href="/" className="flex items-center gap-2 group">
+                            <div className="w-10 h-10 bg-[#002147] rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
                                 <Home className="w-5 h-5 text-[#FFC72C]" />
                             </div>
-                            <span className="text-xl font-bold text-[#002147]">House Hunter</span>
-                        </div>
+                            <span className="text-xl font-bold text-[#002147] tracking-tight">House Hunter</span>
+                        </Link>
 
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-6">
                             <Link
                                 href="/explore"
-                                className="text-slate-600 hover:text-[#002147] transition-colors text-sm font-medium"
+                                className="hidden sm:flex items-center gap-2 text-slate-600 hover:text-[#002147] transition-colors text-sm font-medium group"
                             >
-                                Browse Apartments
+                                <div className="p-2 rounded-lg bg-slate-100 group-hover:bg-[#002147]/5 transition-colors">
+                                    <Home size={18} className="text-slate-500 group-hover:text-[#002147]" />
+                                </div>
+                                <span>Browse Apartments</span>
                             </Link>
 
-                            <div className="flex items-center gap-3 pl-4 border-l border-slate-200">
-                                <div className="h-8 w-8 rounded-full bg-slate-200 overflow-hidden">
-                                    {user.profilePic ? (
-                                        <img src={user.profilePic} alt="Profile" className="h-full w-full object-cover" />
-                                    ) : (
-                                        <span className="flex h-full w-full items-center justify-center font-bold text-slate-500 text-xs">{user.name[0]}</span>
-                                    )}
+                            <div className="flex items-center gap-3 pl-6 border-l border-slate-200">
+                                <div className="flex items-center gap-3">
+                                    <div className="text-right hidden md:block">
+                                        <div className="text-sm font-bold text-[#002147]">{user.name}</div>
+                                        <div className="text-xs text-slate-500">Student</div>
+                                    </div>
+                                    <div className="h-10 w-10 rounded-full bg-[#002147]/10 border border-[#002147]/20 overflow-hidden">
+                                        {user.profilePic ? (
+                                            <img src={user.profilePic} alt="Profile" className="h-full w-full object-cover" />
+                                        ) : (
+                                            <span className="flex h-full w-full items-center justify-center font-bold text-[#002147]">{user.name[0]}</span>
+                                        )}
+                                    </div>
                                 </div>
 
                                 <button
                                     onClick={async () => { await store.logout(); router.push('/'); }}
-                                    className="text-slate-400 hover:text-red-600 transition-colors"
+                                    className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all ml-2"
                                     title="Logout"
                                 >
-                                    <LogOut size={18} />
+                                    <LogOut size={20} />
                                 </button>
                             </div>
                         </div>
@@ -87,40 +96,52 @@ export default function BuyerDashboard() {
             </header>
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-                <h1 className="text-2xl font-bold text-slate-900 mb-6">My Messages</h1>
+                <div className="flex items-center justify-between mb-8">
+                    <div>
+                        <h1 className="text-2xl font-bold text-[#002147]">My Messages</h1>
+                        <p className="text-slate-500 text-sm">Manage your conversations with agents</p>
+                    </div>
+                </div>
 
-                <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                     <div className="divide-y divide-slate-100">
                         {chats.length === 0 ? (
-                            <div className="px-6 py-12 text-center">
-                                <MessageSquare className="w-12 h-12 text-slate-300 mx-auto mb-3" />
-                                <p className="text-slate-500">No messages yet</p>
-                                <Link href="/explore" className="text-[#002147] font-medium hover:underline mt-2 inline-block">
-                                    Start exploring apartments
+                            <div className="px-6 py-16 text-center">
+                                <div className="inline-flex items-center justify-center w-16 h-16 bg-slate-50 rounded-full mb-4">
+                                    <MessageSquare className="w-8 h-8 text-slate-300" />
+                                </div>
+                                <h3 className="text-lg font-bold text-slate-900 mb-1">No messages yet</h3>
+                                <p className="text-slate-500 mb-6 text-sm">Start a conversation with an agent to see it here</p>
+                                <Link
+                                    href="/explore"
+                                    className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#002147] text-white rounded-xl text-sm font-bold hover:bg-[#001835] transition-all shadow-lg shadow-[#002147]/20"
+                                >
+                                    Start exploring
+                                    <ArrowRight size={16} />
                                 </Link>
                             </div>
                         ) : (
                             chats.map((chat) => (
-                                <div key={chat.id} className="px-6 py-4 hover:bg-slate-50 transition-colors">
+                                <div key={chat.id} className="p-6 hover:bg-slate-50 transition-colors group">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-4">
-                                            <div className="h-12 w-12 rounded-full bg-indigo-100 flex items-center justify-center overflow-hidden border border-indigo-200">
+                                            <div className="h-12 w-12 rounded-full bg-[#002147]/5 flex items-center justify-center overflow-hidden border border-[#002147]/10">
                                                 {chat.seller?.profilePic ? (
                                                     <img src={chat.seller.profilePic} alt={chat.seller.name} className="h-full w-full object-cover" />
                                                 ) : (
-                                                    <span className="text-indigo-700 font-bold text-sm">{chat.seller?.name?.[0]}</span>
+                                                    <span className="text-[#002147] font-bold text-lg">{chat.seller?.name?.[0]}</span>
                                                 )}
                                             </div>
                                             <div>
-                                                <p className="font-bold text-slate-900">{chat.seller?.name}</p>
-                                                <p className="text-sm text-slate-500">
+                                                <p className="font-bold text-slate-900 group-hover:text-[#002147] transition-colors">{chat.seller?.name}</p>
+                                                <p className="text-sm text-slate-500 flex items-center gap-1">
                                                     Regarding: <span className="font-medium text-slate-700">{chat.listing?.address}</span>
                                                 </p>
                                             </div>
                                         </div>
                                         <Link
                                             href={`/dashboard/buyer/chat/${chat.id}`}
-                                            className="px-4 py-2 bg-[#002147] hover:bg-[#001835] text-white rounded-lg text-sm font-medium transition-all"
+                                            className="px-4 py-2 bg-white border border-slate-200 text-slate-700 hover:border-[#002147] hover:text-[#002147] rounded-lg text-sm font-medium transition-all shadow-sm"
                                         >
                                             Open Chat
                                         </Link>

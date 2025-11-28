@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { store, User, Listing, Chat } from "@/lib/store";
-import { Plus, MessageCircle, Home, Trash2, LogOut, TrendingUp, Users, Loader2 } from "lucide-react";
+import { Plus, MessageCircle, Home, Trash2, LogOut, TrendingUp, Users, Loader2, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function SellerDashboard() {
@@ -60,117 +60,157 @@ export default function SellerDashboard() {
         <div className="min-h-screen bg-slate-50 selection:bg-[#FFC72C] selection:text-[#002147]">
 
             {/* Header */}
-            <header className="bg-white border-b border-slate-200 sticky top-0 z-50">
+            <header className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex justify-between items-center py-4">
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 bg-[#002147] rounded-lg flex items-center justify-center">
+                        <Link href="/" className="flex items-center gap-2 group">
+                            <div className="w-10 h-10 bg-[#002147] rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
                                 <Home className="w-5 h-5 text-[#FFC72C]" />
                             </div>
-                            <div>
-                                <h1 className="text-lg font-bold text-slate-900">Agent Dashboard</h1>
-                            </div>
-                        </div>
+                            <span className="text-xl font-bold text-[#002147] tracking-tight">House Hunter</span>
+                        </Link>
 
-                        <div className="flex items-center gap-4">
-                            <div className="hidden sm:flex items-center gap-2 text-sm text-slate-600">
-                                <span className="font-medium">Welcome,</span>
-                                <span className="font-bold text-[#002147]">{user.name}</span>
-                            </div>
+                        <div className="flex items-center gap-6">
+                            <div className="flex items-center gap-3 pl-6 border-l border-slate-200">
+                                <div className="flex items-center gap-3">
+                                    <div className="text-right hidden md:block">
+                                        <div className="text-sm font-bold text-[#002147]">{user.name}</div>
+                                        <div className="text-xs text-slate-500">Agent</div>
+                                    </div>
+                                    <div className="h-10 w-10 rounded-full bg-[#002147]/10 border border-[#002147]/20 overflow-hidden">
+                                        {user.profilePic ? (
+                                            <img src={user.profilePic} alt="Profile" className="h-full w-full object-cover" />
+                                        ) : (
+                                            <span className="flex h-full w-full items-center justify-center font-bold text-[#002147]">{user.name[0]}</span>
+                                        )}
+                                    </div>
+                                </div>
 
-                            <button
-                                onClick={async () => { await store.logout(); router.push('/'); }}
-                                className="text-slate-400 hover:text-red-600 transition-colors"
-                                title="Logout"
-                            >
-                                <LogOut size={18} />
-                            </button>
+                                <button
+                                    onClick={async () => { await store.logout(); router.push('/'); }}
+                                    className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all ml-2"
+                                    title="Logout"
+                                >
+                                    <LogOut size={20} />
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
             </header>
 
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+                    <div>
+                        <h1 className="text-2xl font-bold text-[#002147]">Agent Dashboard</h1>
+                        <p className="text-slate-500 text-sm">Overview of your property listings and inquiries</p>
+                    </div>
+                    <Link
+                        href="/dashboard/seller/add"
+                        className="inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-[#002147] text-white rounded-xl text-sm font-bold hover:bg-[#001835] transition-all shadow-lg shadow-[#002147]/20"
+                    >
+                        <Plus size={18} />
+                        Add New Listing
+                    </Link>
+                </div>
 
                 {/* Stats Cards */}
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+                    <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between mb-4">
-                            <div className="p-2 bg-indigo-50 rounded-lg">
+                            <div className="p-3 bg-indigo-50 rounded-xl">
                                 <Home className="w-6 h-6 text-[#002147]" />
                             </div>
-                            <span className="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded-full">Total</span>
+                            <span className="text-xs font-bold text-[#002147] bg-indigo-50 px-2.5 py-1 rounded-full">Total</span>
                         </div>
                         <div className="text-3xl font-bold text-slate-900 mb-1">{listings.length}</div>
-                        <div className="text-sm text-slate-500">Active Listings</div>
+                        <div className="text-sm text-slate-500 font-medium">Active Listings</div>
                     </div>
 
-                    <div className="bg-white rounded-xl p-6 border border-slate-200 shadow-sm">
+                    <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow">
                         <div className="flex items-center justify-between mb-4">
-                            <div className="p-2 bg-emerald-50 rounded-lg">
+                            <div className="p-3 bg-[#FFC72C]/10 rounded-xl">
                                 <Users className="w-6 h-6 text-[#002147]" />
                             </div>
-                            <span className="text-xs font-medium text-slate-500 bg-slate-100 px-2 py-1 rounded-full">Total</span>
+                            <span className="text-xs font-bold text-[#002147] bg-[#FFC72C]/10 px-2.5 py-1 rounded-full">Total</span>
                         </div>
                         <div className="text-3xl font-bold text-slate-900 mb-1">{chats.length}</div>
-                        <div className="text-sm text-slate-500">Interested Buyers</div>
+                        <div className="text-sm text-slate-500 font-medium">Interested Buyers</div>
                     </div>
 
-                    <Link
-                        href="/dashboard/seller/add"
-                        className="bg-[#002147] hover:bg-[#001835] rounded-xl p-6 text-white shadow-md transition-all flex flex-col justify-between group"
-                    >
-                        <div className="flex items-center justify-between mb-4">
-                            <div className="p-2 bg-white/20 rounded-lg">
-                                <Plus className="w-6 h-6 text-white" />
+                    <div className="bg-gradient-to-br from-[#002147] to-[#001835] rounded-2xl p-6 text-white shadow-lg shadow-[#002147]/20 relative overflow-hidden group">
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-[#FFC72C] rounded-full blur-3xl opacity-10 -mr-10 -mt-10"></div>
+
+                        <div className="relative z-10 h-full flex flex-col justify-between">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
+                                    <TrendingUp className="w-5 h-5 text-[#FFC72C]" />
+                                </div>
+                                <span className="text-sm font-medium text-slate-300">Performance</span>
+                            </div>
+                            <div>
+                                <div className="text-2xl font-bold mb-1">Grow your reach</div>
+                                <div className="text-slate-300 text-sm mb-4">Get verified to boost visibility</div>
+                                <button className="text-xs font-bold bg-[#FFC72C] text-[#002147] px-3 py-1.5 rounded-lg hover:bg-[#ffcf4d] transition-colors">
+                                    Verify Account
+                                </button>
                             </div>
                         </div>
-                        <div>
-                            <div className="text-lg font-bold mb-1">Add New Listing</div>
-                            <div className="text-indigo-100 text-sm">Post a new apartment</div>
-                        </div>
-                    </Link>
+                    </div>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
                     {/* Active Listings */}
-                    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                        <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
+                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[500px]">
+                        <div className="px-6 py-5 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
                             <h3 className="font-bold text-slate-900">Active Listings</h3>
-                            <Link href="/dashboard/seller/add" className="text-sm text-[#002147] font-medium hover:text-[#001835]">
-                                + Add New
+                            <Link href="/dashboard/seller/add" className="text-xs font-bold text-[#002147] hover:underline">
+                                View All
                             </Link>
                         </div>
 
-                        <div className="divide-y divide-slate-100 max-h-96 overflow-y-auto">
+                        <div className="divide-y divide-slate-100 overflow-y-auto flex-1 custom-scrollbar">
                             {listings.length === 0 ? (
-                                <div className="px-6 py-12 text-center">
-                                    <Home className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-                                    <p className="text-slate-500 text-sm">No active listings yet</p>
+                                <div className="flex flex-col items-center justify-center h-full p-6 text-center">
+                                    <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                                        <Home className="w-8 h-8 text-slate-300" />
+                                    </div>
+                                    <h4 className="text-slate-900 font-medium mb-1">No listings yet</h4>
+                                    <p className="text-slate-500 text-sm mb-4">Start by adding your first property</p>
+                                    <Link
+                                        href="/dashboard/seller/add"
+                                        className="text-sm font-bold text-[#002147] hover:underline"
+                                    >
+                                        Add Listing
+                                    </Link>
                                 </div>
                             ) : (
                                 listings.map((listing) => (
-                                    <div key={listing.id} className="px-6 py-4 hover:bg-slate-50 transition-colors group">
+                                    <div key={listing.id} className="p-4 hover:bg-slate-50 transition-colors group">
                                         <div className="flex items-center gap-4">
-                                            {listing.images[0] && (
-                                                <div className="h-12 w-12 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0 border border-slate-200">
+                                            <div className="h-16 w-20 rounded-lg overflow-hidden bg-slate-100 flex-shrink-0 border border-slate-200 relative">
+                                                {listing.images[0] ? (
                                                     <img src={listing.images[0]} alt="Apartment" className="h-full w-full object-cover" />
-                                                </div>
-                                            )}
-                                            <div className="flex-1 min-w-0">
-                                                <p className="text-sm font-bold text-slate-900 truncate">{listing.address}</p>
-                                                <p className="text-xs text-slate-500 mt-0.5">{listing.location}</p>
+                                                ) : (
+                                                    <div className="flex items-center justify-center h-full">
+                                                        <Home className="w-6 h-6 text-slate-300" />
+                                                    </div>
+                                                )}
                                             </div>
-                                            <div className="text-right mr-4">
-                                                <p className="text-sm font-bold text-[#002147]">₦{listing.price.toLocaleString()}</p>
+                                            <div className="flex-1 min-w-0">
+                                                <h4 className="text-sm font-bold text-slate-900 truncate group-hover:text-[#002147] transition-colors">{listing.address}</h4>
+                                                <p className="text-xs text-slate-500 mt-1 flex items-center gap-1">
+                                                    <span className="bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">{listing.location}</span>
+                                                </p>
+                                                <p className="text-sm font-bold text-[#002147] mt-1">₦{listing.price.toLocaleString()}</p>
                                             </div>
                                             <button
                                                 onClick={() => handleDeleteListing(listing.id)}
-                                                className="p-2 hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-lg transition-all"
+                                                className="p-2 hover:bg-red-50 text-slate-400 hover:text-red-500 rounded-lg transition-all opacity-0 group-hover:opacity-100"
                                                 title="Delete"
                                             >
-                                                <Trash2 size={16} />
+                                                <Trash2 size={18} />
                                             </button>
                                         </div>
                                     </div>
@@ -180,41 +220,44 @@ export default function SellerDashboard() {
                     </div>
 
                     {/* Interested Buyers */}
-                    <div className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
-                        <div className="px-6 py-4 border-b border-slate-100">
+                    <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col h-[500px]">
+                        <div className="px-6 py-5 border-b border-slate-100 bg-slate-50/50">
                             <h3 className="font-bold text-slate-900">Recent Inquiries</h3>
                         </div>
 
-                        <div className="divide-y divide-slate-100 max-h-96 overflow-y-auto">
+                        <div className="divide-y divide-slate-100 overflow-y-auto flex-1 custom-scrollbar">
                             {chats.length === 0 ? (
-                                <div className="px-6 py-12 text-center">
-                                    <MessageCircle className="w-10 h-10 text-slate-300 mx-auto mb-3" />
-                                    <p className="text-slate-500 text-sm">No inquiries yet</p>
+                                <div className="flex flex-col items-center justify-center h-full p-6 text-center">
+                                    <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-4">
+                                        <MessageCircle className="w-8 h-8 text-slate-300" />
+                                    </div>
+                                    <h4 className="text-slate-900 font-medium mb-1">No inquiries yet</h4>
+                                    <p className="text-slate-500 text-sm">Messages from interested students will appear here</p>
                                 </div>
                             ) : (
                                 chats.map((chat) => (
-                                    <div key={chat.id} className="px-6 py-4 hover:bg-slate-50 transition-colors">
+                                    <div key={chat.id} className="p-4 hover:bg-slate-50 transition-colors">
                                         <div className="flex items-center justify-between">
                                             <div className="flex items-center gap-3">
-                                                <div className="h-10 w-10 rounded-full bg-[#002147]/10 flex items-center justify-center overflow-hidden border border-[#002147]/20">
+                                                <div className="h-10 w-10 rounded-full bg-[#002147]/5 flex items-center justify-center overflow-hidden border border-[#002147]/10">
                                                     {chat.buyer?.profilePic ? (
                                                         <img src={chat.buyer.profilePic} alt={chat.buyer.name} className="h-full w-full object-cover" />
                                                     ) : (
-                                                        <span className="text-[#002147] font-bold text-xs">{chat.buyer?.name?.[0]}</span>
+                                                        <span className="text-[#002147] font-bold text-sm">{chat.buyer?.name?.[0]}</span>
                                                     )}
                                                 </div>
                                                 <div>
                                                     <p className="text-sm font-bold text-slate-900">{chat.buyer?.name}</p>
-                                                    <p className="text-xs text-slate-500 truncate max-w-xs">
-                                                        {chat.listing?.address}
+                                                    <p className="text-xs text-slate-500 truncate max-w-[150px] sm:max-w-xs">
+                                                        Re: {chat.listing?.address}
                                                     </p>
                                                 </div>
                                             </div>
                                             <Link
                                                 href={`/dashboard/seller/chat/${chat.id}`}
-                                                className="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 hover:border-[#002147] hover:text-[#002147] rounded-lg text-xs font-medium transition-all"
+                                                className="px-3 py-1.5 bg-white border border-slate-200 text-slate-700 hover:border-[#002147] hover:text-[#002147] rounded-lg text-xs font-bold transition-all shadow-sm"
                                             >
-                                                Chat
+                                                Reply
                                             </Link>
                                         </div>
                                     </div>
