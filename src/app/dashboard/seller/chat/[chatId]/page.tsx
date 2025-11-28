@@ -45,6 +45,24 @@ export default function SellerChat() {
         fetchData();
     }, [chatId, router]);
 
+    // Polling effect for real-time updates
+    useEffect(() => {
+        if (!user || !currentChat) return;
+
+        const pollMessages = async () => {
+            const chats = await store.getChats(user.id);
+            const chat = chats.find(c => c.id === chatId);
+            if (chat) {
+                setMessages(chat.messages);
+            }
+        };
+
+        // Poll every 3 seconds
+        const interval = setInterval(pollMessages, 3000);
+
+        return () => clearInterval(interval);
+    }, [chatId, user, currentChat]);
+
     const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!newMessage.trim() || !user || !currentChat) return;
@@ -108,8 +126,8 @@ export default function SellerChat() {
                         <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
                             <div
                                 className={`max-w-[80%] px-4 py-2 rounded-2xl text-sm ${isMe
-                                        ? 'bg-indigo-600 text-white rounded-br-none'
-                                        : 'bg-white text-slate-800 border border-slate-200 rounded-bl-none shadow-sm'
+                                    ? 'bg-indigo-600 text-white rounded-br-none'
+                                    : 'bg-white text-slate-800 border border-slate-200 rounded-bl-none shadow-sm'
                                     }`}
                             >
                                 <p>{msg.content}</p>
