@@ -1,12 +1,12 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { store } from "@/lib/store";
 import { Loader2, Home, Mail, Lock, ArrowRight, CheckCircle2, Star } from "lucide-react";
 
-export default function BuyerLogin() {
+function BuyerLoginForm() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const [isLoading, setIsLoading] = useState(false);
@@ -236,5 +236,17 @@ export default function BuyerLogin() {
                 </div>
             </div>
         </div>
+    );
+}
+
+export default function BuyerLogin() {
+    return (
+        <Suspense fallback={
+            <div className="min-h-screen flex items-center justify-center">
+                <Loader2 className="animate-spin text-[#002147]" size={32} />
+            </div>
+        }>
+            <BuyerLoginForm />
+        </Suspense>
     );
 }
