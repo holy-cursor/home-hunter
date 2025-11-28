@@ -88,10 +88,11 @@ export default function SellerDashboard() {
 
                                 <button
                                     onClick={async () => { await store.logout(); router.push('/'); }}
-                                    className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all ml-2"
+                                    className="flex items-center gap-2 px-4 py-2 text-slate-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all font-medium text-sm"
                                     title="Logout"
                                 >
-                                    <LogOut size={20} />
+                                    <LogOut size={18} />
+                                    <span className="hidden sm:inline">Sign Out</span>
                                 </button>
                             </div>
                         </div>
