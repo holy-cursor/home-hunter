@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { store, Chat, Message, User, Listing } from "@/lib/store";
-import { Send, ArrowLeft, MoreVertical, Loader2, Check } from "lucide-react";
+import { Send, ArrowLeft, MoreVertical, Loader2, Check, Shield } from "lucide-react";
 
 export default function SellerChat() {
     const router = useRouter();
@@ -126,6 +126,18 @@ export default function SellerChat() {
                 </button>
             </header>
 
+            {/* Privacy Warning Banner */}
+            <div className="bg-amber-50 border-b border-amber-100 px-4 py-3 flex items-start gap-3">
+                <div className="p-1 bg-amber-100 rounded-full shrink-0 mt-0.5">
+                    <Shield size={14} className="text-amber-600" />
+                </div>
+                <div className="flex-1">
+                    <p className="text-xs font-medium text-amber-800 leading-relaxed">
+                        For your safety, chats are monitored. Do not share sensitive personal information like bank details or passwords.
+                    </p>
+                </div>
+            </div>
+
             {/* Messages Area */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 {messages.map((msg) => {
@@ -134,8 +146,8 @@ export default function SellerChat() {
                         <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
                             <div
                                 className={`max-w-[80%] px-4 py-3 rounded-2xl shadow-sm relative ${isMe
-                                        ? 'bg-[#002147] text-white rounded-tr-none' // Me: Navy Blue
-                                        : 'bg-white text-[#002147] border border-gray-200 rounded-tl-none' // Them: White
+                                    ? 'bg-[#002147] text-white rounded-tr-none' // Me: Navy Blue
+                                    : 'bg-white text-[#002147] border border-gray-200 rounded-tl-none' // Them: White
                                     }`}
                             >
                                 <p className="text-sm leading-relaxed">{msg.content}</p>
