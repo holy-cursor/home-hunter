@@ -202,7 +202,7 @@ export default function SellerDashboard() {
                                                 <div className="flex justify-between items-start mb-1">
                                                     <p className="font-bold text-[#002147] text-sm truncate">Buyer Inquiry</p>
                                                     <span className="text-xs text-gray-400 whitespace-nowrap">
-                                                        {new Date(chat.createdAt).toLocaleDateString()}
+                                                        {new Date(chat.createdAt || new Date().toISOString()).toLocaleDateString()}
                                                     </span>
                                                 </div>
                                                 <p className="text-xs text-gray-500 truncate">
