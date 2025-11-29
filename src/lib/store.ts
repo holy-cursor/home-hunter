@@ -45,6 +45,13 @@ export interface Message {
 }
 
 class Store {
+    // Hardcoded admin emails - add your email here
+    private ADMIN_EMAILS = [
+        'admin@example.com',
+        // Add your email below:
+        // 'youremail@example.com',
+    ];
+
     // Auth
     async getCurrentUser(): Promise<User | null> {
         const { data: { user } } = await supabase.auth.getUser();
@@ -58,6 +65,9 @@ class Store {
 
         if (!profile) return null;
 
+        // Check if user email is in admin list
+        const isAdmin = this.ADMIN_EMAILS.includes(user.email || '');
+
         return {
             id: profile.id,
             name: profile.name,
@@ -67,7 +77,7 @@ class Store {
             isStudent: profile.is_student,
             studentLevel: profile.student_level,
             bvnVerified: profile.bvn_verified,
-            isAdmin: profile.is_admin,
+            isAdmin: isAdmin, // Set based on email list
             isBanned: profile.is_banned,
             bannedAt: profile.banned_at,
             bannedReason: profile.banned_reason,
