@@ -26,6 +26,7 @@ export interface Listing {
     video?: string;
     status: 'active' | 'sold';
     createdAt?: string;
+    views?: number;
 }
 
 export interface Chat {
