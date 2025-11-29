@@ -156,11 +156,17 @@ class Store {
     }
 
     // Listings
-    async getListings(): Promise<Listing[]> {
-        const { data, error } = await supabase
+    async getListings(sellerId?: string): Promise<Listing[]> {
+        let query = supabase
             .from('listings')
             .select('*')
             .order('created_at', { ascending: false });
+
+        if (sellerId) {
+            query = query.eq('seller_id', sellerId);
+        }
+
+        const { data, error } = await query;
 
         if (error || !data) return [];
 
