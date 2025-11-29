@@ -9,6 +9,10 @@ export interface User {
     isStudent?: boolean;
     studentLevel?: string;
     bvnVerified?: boolean;
+    isAdmin?: boolean;
+    isBanned?: boolean;
+    bannedAt?: string;
+    bannedReason?: string;
 }
 
 export interface Listing {
@@ -63,6 +67,10 @@ class Store {
             isStudent: profile.is_student,
             studentLevel: profile.student_level,
             bvnVerified: profile.bvn_verified,
+            isAdmin: profile.is_admin,
+            isBanned: profile.is_banned,
+            bannedAt: profile.banned_at,
+            bannedReason: profile.banned_reason,
         };
     }
 
@@ -300,6 +308,149 @@ class Store {
             .getPublicUrl(filePath);
 
         return data.publicUrl;
+    }
+
+    // Admin Functions
+    async getAdminStats() {
+        const [usersResult, listingsResult, chatsResult] = await Promise.all([
+            supabase.from('profiles').select('id, role', { count: 'exact' }),
+            supabase.from('listings').select('id, status', { count: 'exact' }),
+            supabase.from('chats').select('id', { count: 'exact' })
+        ]);
+
+        const buyers = usersResult.data?.filter(u => u.role === 'buyer').length || 0;
+        const sellers = usersResult.data?.filter(u => u.role === 'seller').length || 0;
+        const activeListings = listingsResult.data?.filter(l => l.status === 'active').length || 0;
+        const soldListings = listingsResult.data?.filter(l => l.status === 'sold').length || 0;
+
+        return {
+            totalUsers: usersResult.count || 0,
+            buyers,
+            sellers,
+            totalListings: listingsResult.count || 0,
+            activeListings,
+            soldListings,
+            totalChats: chatsResult.count || 0,
+        };
+    }
+
+    async getAllUsers() {
+        const { data, error } = await supabase
+            .from('profiles')
+            .select('*')
+            .order('created_at', { ascending: false });
+
+        if (error || !data) return [];
+
+        return data.map((p: any) => ({
+            id: p.id,
+            name: p.name,
+            email: '', // Email not stored in profiles
+            role: p.role,
+            profilePic: p.profile_pic,
+            isStudent: p.is_student,
+            studentLevel: p.student_level,
+            bvnVerified: p.bvn_verified,
+            isAdmin: p.is_admin,
+            isBanned: p.is_banned,
+            bannedAt: p.banned_at,
+            bannedReason: p.banned_reason,
+        }));
+    }
+
+    async getAllChats() {
+        const { data: chats, error } = await supabase
+            .from('chats')
+            .select(`
+                *,
+                messages (*)
+            `)
+            .order('created_at', { ascending: false });
+
+        if (error || !chats) return [];
+
+        return chats.map((c: any) => ({
+            id: c.id,
+            listingId: c.listing_id,
+            buyerId: c.buyer_id,
+            sellerId: c.seller_id,
+            createdAt: c.created_at,
+            messages: (c.messages || []).map((m: any) => ({
+                id: m.id,
+                senderId: m.sender_id,
+                content: m.content,
+                timestamp: m.created_at
+            })).sort((a: any, b: any) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime())
+        }));
+    }
+
+    async banUser(userId: string, reason: string, adminId: string) {
+        const { error } = await supabase
+            .from('profiles')
+            .update({
+                is_banned: true,
+                banned_at: new Date().toISOString(),
+                banned_reason: reason
+            })
+            .eq('id', userId);
+
+        if (!error) {
+            await this.logAdminAction(adminId, 'ban_user', 'user', userId, { reason });
+        }
+
+        return { error };
+    }
+
+    async unbanUser(userId: string, adminId: string) {
+        const { error } = await supabase
+            .from('profiles')
+            .update({
+                is_banned: false,
+                banned_at: null,
+                banned_reason: null
+            })
+            .eq('id', userId);
+
+        if (!error) {
+            await this.logAdminAction(adminId, 'unban_user', 'user', userId, {});
+        }
+
+        return { error };
+    }
+
+    async deleteListing(listingId: string, adminId: string) {
+        const { error } = await supabase
+            .from('listings')
+            .update({ status: 'sold' })
+            .eq('id', listingId);
+
+        if (!error) {
+            await this.logAdminAction(adminId, 'delete_listing', 'listing', listingId, {});
+        }
+
+        return { error };
+    }
+
+    async logAdminAction(adminId: string, action: string, targetType: string, targetId: string, details: any) {
+        await supabase
+            .from('admin_logs')
+            .insert({
+                admin_id: adminId,
+                action,
+                target_type: targetType,
+                target_id: targetId,
+                details
+            });
+    }
+
+    async getAdminLogs(limit: number = 50) {
+        const { data, error } = await supabase
+            .from('admin_logs')
+            .select('*')
+            .order('created_at', { ascending: false })
+            .limit(limit);
+
+        return data || [];
     }
 }
 
