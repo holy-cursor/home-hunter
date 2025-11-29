@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { store, User } from "@/lib/store";
-import { Loader2, Upload, X } from "lucide-react";
+import { Loader2, Upload, X, ArrowLeft, Check } from "lucide-react";
 
 const LOCATIONS = [
     "Campus Gate",
@@ -99,183 +99,188 @@ export default function AddApartment() {
             if (url) imageUrls.push(url);
         }
 
-        // Upload video to Supabase Storage
+        // Upload video
         const videoUrl = await store.uploadImage(videoFile, 'listings');
 
-        if (imageUrls.length < 2 || !videoUrl) {
+        if (imageUrls.length > 0 && videoUrl) {
+            await store.addListing({
+                sellerId: user.id,
+                address: formData.address,
+                location: formData.location,
+                price: parseFloat(formData.price),
+                description: formData.description,
+                images: imageUrls,
+                video: videoUrl,
+                status: 'active'
+            });
+            router.push("/dashboard/seller");
+        } else {
             alert("Failed to upload files. Please try again.");
             setIsLoading(false);
-            return;
         }
-
-        await store.addListing({
-            sellerId: user.id,
-            address: formData.address,
-            location: formData.location,
-            price: Number(formData.price),
-            images: imageUrls,
-            video: videoUrl,
-            status: 'active',
-            description: formData.description
-        });
-
-        setIsLoading(false);
-        router.push("/dashboard/seller");
     };
 
     if (!user) return null;
 
     return (
-        <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="min-h-screen bg-[#F8FAFC] py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-3xl mx-auto">
-                <h1 className="text-3xl font-bold text-gray-900 mb-8">Add New Apartment</h1>
+                {/* Header */}
+                <div className="flex items-center gap-4 mb-8">
+                    <button
+                        onClick={() => router.back()}
+                        className="p-2 bg-white border border-gray-200 rounded-full hover:bg-gray-50 transition-colors shadow-sm"
+                    >
+                        <ArrowLeft size={20} className="text-[#002147]" />
+                    </button>
+                    <div>
+                        <h1 className="text-2xl font-bold text-[#002147]">Add New Property</h1>
+                        <p className="text-sm text-gray-500">Fill in the details to list your apartment</p>
+                    </div>
+                </div>
 
-                <div className="bg-white shadow sm:rounded-lg overflow-hidden">
-                    <div className="px-4 py-5 sm:p-6">
-                        <form onSubmit={handleSubmit} className="space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-8">
+                    {/* Media Upload Section */}
+                    <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
+                        <h2 className="text-lg font-bold text-[#002147] mb-4 flex items-center gap-2">
+                            <Upload size={20} className="text-[#FFC72C]" />
+                            Media Upload
+                        </h2>
 
-                            {/* Address */}
-                            <div>
-                                <label htmlFor="address" className="block text-sm font-medium text-gray-700">Address</label>
-                                <input
-                                    type="text"
-                                    name="address"
-                                    id="address"
-                                    required
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    value={formData.address}
-                                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                                />
-                            </div>
-
-                            {/* Location */}
-                            <div>
-                                <label htmlFor="location" className="block text-sm font-medium text-gray-700">Location</label>
-                                <select
-                                    id="location"
-                                    name="location"
-                                    className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
-                                    value={formData.location}
-                                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                                >
-                                    {LOCATIONS.map(loc => (
-                                        <option key={loc} value={loc}>{loc}</option>
-                                    ))}
-                                </select>
-                            </div>
-
-                            {/* Price */}
-                            <div>
-                                <label htmlFor="price" className="block text-sm font-medium text-gray-700">Price (₦)</label>
-                                <input
-                                    type="number"
-                                    name="price"
-                                    id="price"
-                                    required
-                                    min="0"
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    value={formData.price}
-                                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
-                                />
-                            </div>
-
-                            {/* Description */}
-                            <div>
-                                <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description (Optional)</label>
-                                <textarea
-                                    id="description"
-                                    name="description"
-                                    rows={3}
-                                    className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    value={formData.description}
-                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                                />
-                            </div>
-
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {/* Images */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Images (At least 2)</label>
-                                <div className="mt-2 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4">
-                                    {imagePreviews.map((img, idx) => (
-                                        <div key={idx} className="relative group aspect-square bg-gray-100 rounded-lg overflow-hidden">
-                                            <img src={img} alt={`Upload ${idx}`} className="object-cover w-full h-full" />
+                            <div className="space-y-4">
+                                <label className="block text-sm font-medium text-[#002147]">Property Images (Min 2)</label>
+                                <div className="grid grid-cols-3 gap-2">
+                                    {imagePreviews.map((preview, index) => (
+                                        <div key={index} className="relative aspect-square rounded-lg overflow-hidden border border-gray-200 group">
+                                            <img src={preview} alt="Preview" className="w-full h-full object-cover" />
                                             <button
                                                 type="button"
-                                                onClick={() => removeImage(idx)}
-                                                className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                                                onClick={() => removeImage(index)}
+                                                className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
                                             >
-                                                <X size={14} />
+                                                <X size={12} />
                                             </button>
                                         </div>
                                     ))}
-                                    <label className="relative block w-full aspect-square border-2 border-gray-300 border-dashed rounded-lg p-12 text-center hover:border-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 cursor-pointer">
-                                        <Upload className="mx-auto h-8 w-8 text-gray-400" />
-                                        <span className="mt-2 block text-xs font-medium text-gray-900">Add Image</span>
-                                        <input type="file" className="hidden" accept="image/*" multiple onChange={handleImageUpload} />
+                                    <label className="aspect-square rounded-lg border-2 border-dashed border-[#002147]/20 hover:border-[#002147] hover:bg-blue-50 flex flex-col items-center justify-center cursor-pointer transition-all">
+                                        <Upload size={24} className="text-[#002147] mb-1" />
+                                        <span className="text-xs text-[#002147] font-medium">Add Photos</span>
+                                        <input type="file" multiple accept="image/*" onChange={handleImageUpload} className="hidden" />
                                     </label>
                                 </div>
                             </div>
 
                             {/* Video */}
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700">Video (Required)</label>
-                                <div className="mt-2">
-                                    {videoPreview ? (
-                                        <div className="relative w-full aspect-video bg-black rounded-lg overflow-hidden">
-                                            <video src={videoPreview} controls className="w-full h-full" />
-                                            <button
-                                                type="button"
-                                                onClick={() => { setVideoFile(null); setVideoPreview(null); }}
-                                                className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1"
-                                            >
-                                                <X size={16} />
-                                            </button>
-                                        </div>
-                                    ) : (
-                                        <label className="flex justify-center px-6 pt-5 pb-6 border-2 border-gray-300 border-dashed rounded-md cursor-pointer hover:border-gray-400">
-                                            <div className="space-y-1 text-center">
-                                                <Upload className="mx-auto h-12 w-12 text-gray-400" />
-                                                <div className="flex text-sm text-gray-600">
-                                                    <span className="relative bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-                                                        Upload a video
-                                                    </span>
-                                                </div>
-                                                <p className="text-xs text-gray-500">MP4, WebM up to 10MB</p>
-                                            </div>
-                                            <input type="file" className="hidden" accept="video/*" onChange={handleVideoUpload} />
-                                        </label>
-                                    )}
-                                </div>
+                            <div className="space-y-4">
+                                <label className="block text-sm font-medium text-[#002147]">Property Video (Required)</label>
+                                {videoPreview ? (
+                                    <div className="relative aspect-video rounded-lg overflow-hidden border border-gray-200 bg-black">
+                                        <video src={videoPreview} className="w-full h-full object-contain" controls />
+                                        <button
+                                            type="button"
+                                            onClick={() => { setVideoFile(null); setVideoPreview(null); }}
+                                            className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                                        >
+                                            <X size={16} />
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <label className="aspect-video rounded-lg border-2 border-dashed border-[#002147]/20 hover:border-[#002147] hover:bg-blue-50 flex flex-col items-center justify-center cursor-pointer transition-all">
+                                        <Upload size={32} className="text-[#002147] mb-2" />
+                                        <span className="text-sm text-[#002147] font-medium">Upload Video Tour</span>
+                                        <span className="text-xs text-gray-400 mt-1">MP4, WebM up to 50MB</span>
+                                        <input type="file" accept="video/*" onChange={handleVideoUpload} className="hidden" />
+                                    </label>
+                                )}
                             </div>
-
-                            <div className="pt-5">
-                                <div className="flex justify-end">
-                                    <button
-                                        type="button"
-                                        onClick={() => router.back()}
-                                        className="bg-white py-2 px-4 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        type="submit"
-                                        disabled={isLoading}
-                                        className="ml-3 inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-                                    >
-                                        {isLoading ? (
-                                            <>
-                                                <Loader2 className="animate-spin mr-2" size={16} /> Publishing...
-                                            </>
-                                        ) : (
-                                            "Publish Listing"
-                                        )}
-                                    </button>
-                                </div>
-                            </div>
-
-                        </form>
+                        </div>
                     </div>
-                </div>
+
+                    {/* Details Section */}
+                    <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
+                        <h2 className="text-lg font-bold text-[#002147] mb-6">Property Details</h2>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="col-span-full">
+                                <label className="block text-sm font-medium text-[#002147] mb-2">Full Address</label>
+                                <input
+                                    type="text"
+                                    required
+                                    value={formData.address}
+                                    onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#002147] focus:ring-1 focus:ring-[#002147] outline-none transition-all placeholder-gray-400 text-[#002147]"
+                                    placeholder="e.g., 123 University Road, OAU Campus"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-[#002147] mb-2">Area / Location</label>
+                                <div className="relative">
+                                    <select
+                                        required
+                                        value={formData.location}
+                                        onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                                        className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#002147] focus:ring-1 focus:ring-[#002147] outline-none transition-all appearance-none text-[#002147] bg-white"
+                                    >
+                                        {LOCATIONS.map(loc => (
+                                            <option key={loc} value={loc}>{loc}</option>
+                                        ))}
+                                    </select>
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                                        <ArrowLeft size={16} className="text-gray-400 -rotate-90" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-[#002147] mb-2">Annual Rent (₦)</label>
+                                <input
+                                    type="number"
+                                    required
+                                    value={formData.price}
+                                    onChange={(e) => setFormData({ ...formData, price: e.target.value })}
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#002147] focus:ring-1 focus:ring-[#002147] outline-none transition-all placeholder-gray-400 text-[#002147]"
+                                    placeholder="e.g., 150000"
+                                />
+                            </div>
+
+                            <div className="col-span-full">
+                                <label className="block text-sm font-medium text-[#002147] mb-2">Description</label>
+                                <textarea
+                                    required
+                                    rows={4}
+                                    value={formData.description}
+                                    onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-[#002147] focus:ring-1 focus:ring-[#002147] outline-none transition-all placeholder-gray-400 text-[#002147] resize-none"
+                                    placeholder="Describe the apartment features, amenities, and rules..."
+                                />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Submit Button */}
+                    <div className="flex justify-end pt-4">
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="bg-[#002147] text-white px-8 py-4 rounded-xl font-bold hover:bg-[#001835] disabled:opacity-70 disabled:cursor-not-allowed transition-all shadow-lg shadow-[#002147]/20 flex items-center gap-2"
+                        >
+                            {isLoading ? (
+                                <>
+                                    <Loader2 className="animate-spin" size={20} />
+                                    Publishing Listing...
+                                </>
+                            ) : (
+                                <>
+                                    <Check size={20} className="text-[#FFC72C]" />
+                                    Publish Listing
+                                </>
+                            )}
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
     );

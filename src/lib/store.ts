@@ -324,7 +324,7 @@ class Store {
     async getAdminStats() {
         const [usersResult, listingsResult, chatsResult] = await Promise.all([
             supabase.from('profiles').select('id, role', { count: 'exact' }),
-            supabase.from('listings').select('id, status', { count: 'exact' }),
+            supabase.from('listings').select('id, status, price', { count: 'exact' }),
             supabase.from('chats').select('id', { count: 'exact' })
         ]);
 
@@ -332,6 +332,11 @@ class Store {
         const sellers = usersResult.data?.filter(u => u.role === 'seller').length || 0;
         const activeListings = listingsResult.data?.filter(l => l.status === 'active').length || 0;
         const soldListings = listingsResult.data?.filter(l => l.status === 'sold').length || 0;
+
+        // Calculate total trade volume (sum of prices of sold listings)
+        const totalVolume = listingsResult.data
+            ?.filter(l => l.status === 'sold')
+            .reduce((sum, l) => sum + (l.price || 0), 0) || 0;
 
         return {
             totalUsers: usersResult.count || 0,
@@ -341,6 +346,7 @@ class Store {
             activeListings,
             soldListings,
             totalChats: chatsResult.count || 0,
+            totalVolume,
         };
     }
 
