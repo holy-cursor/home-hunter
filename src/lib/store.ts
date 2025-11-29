@@ -45,11 +45,11 @@ export interface Message {
 }
 
 class Store {
-    // Hardcoded admin emails - add your email here
-    private ADMIN_EMAILS = [
-        'admin@example.com',
-        // Add your email below:
-        // 'youremail@example.com',
+    // Hardcoded admin credentials - add your email and password here
+    private ADMIN_CREDENTIALS = [
+        { email: 'adeyemidavid1507@gmail.com', password: 'admin123' },
+        // Add more admins below:
+        // { email: 'another@example.com', password: 'secure_password' },
     ];
 
     // Auth
@@ -66,7 +66,7 @@ class Store {
         if (!profile) return null;
 
         // Check if user email is in admin list
-        const isAdmin = this.ADMIN_EMAILS.includes(user.email || '');
+        const isAdmin = this.ADMIN_CREDENTIALS.some(admin => admin.email === user.email);
 
         return {
             id: profile.id,

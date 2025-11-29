@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { store, User, Chat, Listing } from "@/lib/store";
-import { MessageSquare, Home, LogOut, Loader2, ArrowRight } from "lucide-react";
+import { MessageSquare, Home, LogOut, Loader2, ArrowRight, Shield } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function BuyerDashboard() {
@@ -81,6 +81,16 @@ export default function BuyerDashboard() {
                                         )}
                                     </div>
                                 </div>
+
+                                {user.isAdmin && (
+                                    <Link
+                                        href="/admin"
+                                        className="flex items-center gap-2 px-4 py-2 text-white bg-[#002147] hover:bg-[#001835] rounded-lg transition-all font-medium text-sm"
+                                    >
+                                        <Shield size={18} />
+                                        <span className="hidden sm:inline">Admin</span>
+                                    </Link>
+                                )}
 
                                 <button
                                     onClick={async () => { await store.logout(); router.push('/'); }}
