@@ -440,13 +440,13 @@ class Store {
         return { error };
     }
 
-    async deleteListing(listingId: string, adminId: string) {
+    async deleteListing(listingId: string, adminId?: string) {
         const { error } = await supabase
             .from('listings')
             .update({ status: 'sold' })
             .eq('id', listingId);
 
-        if (!error) {
+        if (!error && adminId) {
             await this.logAdminAction(adminId, 'delete_listing', 'listing', listingId, {});
         }
 
