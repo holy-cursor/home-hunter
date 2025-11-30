@@ -257,6 +257,15 @@ class Store {
             .update(dbUpdates)
             .eq('id', id);
 
+        // If listing is marked as sold, auto-resolve all reports for this listing
+        if (!error && updates.status === 'sold') {
+            await supabase
+                .from('reports')
+                .update({ status: 'resolved' })
+                .eq('listing_id', id)
+                .in('status', ['pending', 'reviewed']);
+        }
+
         return { error };
     }
 
