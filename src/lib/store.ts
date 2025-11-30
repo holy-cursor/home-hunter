@@ -82,8 +82,12 @@ class Store {
 
         // Sync admin status to DB if needed (crucial for RLS policies)
         if (isAdmin && !profile.is_admin) {
-            await supabase.from('profiles').update({ is_admin: true }).eq('id', user.id);
-            profile.is_admin = true;
+            const { error } = await supabase.from('profiles').update({ is_admin: true }).eq('id', user.id);
+            if (error) {
+                console.error("Failed to sync admin status to DB:", error);
+            } else {
+                profile.is_admin = true;
+            }
         }
 
         return {
