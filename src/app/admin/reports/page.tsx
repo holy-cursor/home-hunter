@@ -70,6 +70,29 @@ export default function AdminReports() {
         }
     };
 
+    const handleWarnSeller = async (report: Report) => {
+        if (!report.listing) return;
+
+        const sellerId = report.listing.seller_id;
+        const listingAddress = report.listing.address;
+
+        if (!confirm(`Send warning to seller about "${listingAddress}"?`)) return;
+
+        // Create a notification for the seller
+        await store.createNotification(
+            sellerId,
+            'system_alert',
+            '⚠️ Listing Reported - Action Required',
+            `Your listing at "${listingAddress}" has been reported for: ${report.reason}. Please review and address this issue, or your listing may be removed.`,
+            `/dashboard/seller`
+        );
+
+        // Mark report as reviewed
+        await store.updateReportStatus(report.id, 'reviewed');
+        setReports(reports.map(r => r.id === report.id ? { ...r, status: 'reviewed' } : r));
+        alert("Warning sent to seller and report marked as reviewed.");
+    };
+
     if (isLoading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin text-[#002147]" size={32} /></div>;
     if (!user) return null;
 
@@ -156,6 +179,16 @@ export default function AdminReports() {
                                                             title="Mark as Reviewed"
                                                         >
                                                             <Check size={16} />
+                                                        </button>
+                                                    )}
+
+                                                    {report.listing && report.status !== 'resolved' && (
+                                                        <button
+                                                            onClick={() => handleWarnSeller(report)}
+                                                            className="p-2 text-orange-600 hover:bg-orange-50 rounded-lg transition-colors"
+                                                            title="Warn Seller"
+                                                        >
+                                                            <AlertTriangle size={16} />
                                                         </button>
                                                     )}
 
