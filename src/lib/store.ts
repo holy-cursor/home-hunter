@@ -80,6 +80,12 @@ class Store {
         // Check if user email is in admin list
         const isAdmin = this.ADMIN_CREDENTIALS.some(admin => admin.email === user.email);
 
+        // Sync admin status to DB if needed (crucial for RLS policies)
+        if (isAdmin && !profile.is_admin) {
+            await supabase.from('profiles').update({ is_admin: true }).eq('id', user.id);
+            profile.is_admin = true;
+        }
+
         return {
             id: profile.id,
             name: profile.name,
