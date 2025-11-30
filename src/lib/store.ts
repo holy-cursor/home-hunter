@@ -535,7 +535,7 @@ class Store {
             .select(`
                 *,
                 listing:listings(address, seller_id),
-                reporter:profiles(name, email)
+                reporter:profiles(name)
             `)
             .order('created_at', { ascending: false });
 

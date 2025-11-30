@@ -22,7 +22,6 @@ interface Report {
     };
     reporter?: {
         name: string;
-        email: string;
     };
 }
 
