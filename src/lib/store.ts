@@ -539,6 +539,11 @@ class Store {
             `)
             .order('created_at', { ascending: false });
 
+        if (error) {
+            console.error("Error fetching reports:", error);
+            return [];
+        }
+
         return data || [];
     }
 
