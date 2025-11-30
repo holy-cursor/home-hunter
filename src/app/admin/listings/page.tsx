@@ -6,6 +6,8 @@ import { store, User, Listing } from "@/lib/store";
 import { ArrowLeft, Shield, Home as HomeIcon, Loader2, Search, Trash2 } from "lucide-react";
 import Link from "next/link";
 
+export const dynamic = 'force-dynamic';
+
 export default function AdminListings() {
     const router = useRouter();
     const [admin, setAdmin] = useState<User | null>(null);

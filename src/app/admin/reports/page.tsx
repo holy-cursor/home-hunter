@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Check, X, AlertTriangle, Trash2, ExternalLink, Loader2, Shield } from "lucide-react";
 
+export const dynamic = 'force-dynamic';
+
 interface Report {
     id: string;
     listing_id: string;

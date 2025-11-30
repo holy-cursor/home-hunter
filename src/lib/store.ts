@@ -29,6 +29,13 @@ export interface Listing {
     views?: number;
 }
 
+export interface Message {
+    id: string;
+    senderId: string;
+    content: string;
+    timestamp: string;
+}
+
 export interface Chat {
     id: string;
     listingId: string;
@@ -38,11 +45,15 @@ export interface Chat {
     createdAt?: string;
 }
 
-export interface Message {
+export interface Notification {
     id: string;
-    senderId: string;
+    userId: string;
+    type: 'view_milestone' | 'new_message' | 'system_alert';
+    title: string;
     content: string;
-    timestamp: string;
+    link?: string;
+    isRead: boolean;
+    createdAt: string;
 }
 
 class Store {
@@ -538,100 +549,93 @@ class Store {
 
         return data || [];
     }
-export interface Notification {
-    id: string;
-    userId: string;
-    type: 'view_milestone' | 'new_message' | 'system_alert';
-    title: string;
-    content: string;
-    link?: string;
-    isRead: boolean;
-    createdAt: string;
-}
+
 
     // ... inside Store class ...
 
     // Notifications
     async getNotifications(userId: string) {
-    const { data, error } = await supabase
-        .from('notifications')
-        .select('*')
-        .eq('user_id', userId)
-        .order('created_at', { ascending: false })
-        .limit(20);
+        const { data, error } = await supabase
+            .from('notifications')
+            .select('*')
+            .eq('user_id', userId)
+            .order('created_at', { ascending: false })
+            .limit(20);
 
-    if (error || !data) return [];
+        if (error || !data) return [];
 
-    return data.map(n => ({
-        id: n.id,
-        userId: n.user_id,
-        type: n.type,
-        title: n.title,
-        content: n.content,
-        link: n.link,
-        isRead: n.is_read,
-        createdAt: n.created_at
-    }));
-}
+        return data.map(n => ({
+            id: n.id,
+            userId: n.user_id,
+            type: n.type,
+            title: n.title,
+            content: n.content,
+            link: n.link,
+            isRead: n.is_read,
+            createdAt: n.created_at
+        }));
+    }
 
     async markNotificationRead(notificationId: string) {
-    const { error } = await supabase
-        .from('notifications')
-        .update({ is_read: true })
-        .eq('id', notificationId);
-    return { error };
-}
+        const { error } = await supabase
+            .from('notifications')
+            .update({ is_read: true })
+            .eq('id', notificationId);
+        return { error };
+    }
 
-    async createNotification(userId: string, type: 'view_milestone' | 'new_message' | 'system_alert', title: string, content: string, link ?: string) {
-    const { error } = await supabase
-        .from('notifications')
-        .insert({
-            user_id: userId,
-            type,
-            title,
-            content,
-            link
-        });
-    return { error };
-}
+    async createNotification(userId: string, type: 'view_milestone' | 'new_message' | 'system_alert', title: string, content: string, link?: string) {
+        const { error } = await supabase
+            .from('notifications')
+            .insert({
+                user_id: userId,
+                type,
+                title,
+                content,
+                link
+            });
+        return { error };
+    }
 
     async incrementListingViews(listingId: string) {
-    // 1. Get current views
-    const { data: listing } = await supabase
-        .from('listings')
-        .select('views, seller_id, address')
-        .eq('id', listingId)
-        .single();
+        // 1. Get current views
+        const { data: listing } = await supabase
+            .from('listings')
+            .select('views, seller_id, address')
+            .eq('id', listingId)
+            .single();
 
-    if (!listing) return;
+        if (!listing) return;
 
-    const newViews = (listing.views || 0) + 1;
+        const newViews = (listing.views || 0) + 1;
 
-    // 2. Update views
-    await supabase
-        .from('listings')
-        .update({ views: newViews })
-        .eq('id', listingId);
+        // 2. Update views
+        await supabase
+            .from('listings')
+            .update({ views: newViews })
+            .eq('id', listingId);
 
-    // 3. Check Milestones (10, 50, 100, then every 100)
-    const milestones = [10, 50, 100];
-    let shouldNotify = false;
+        // 3. Check Milestones (10, 50, 100, then every 100)
+        const milestones = [10, 50, 100];
+        let shouldNotify = false;
 
-    if (milestones.includes(newViews)) {
-        shouldNotify = true;
-    } else if (newViews > 100 && newViews % 100 === 0) {
-        shouldNotify = true;
+        if (milestones.includes(newViews)) {
+            shouldNotify = true;
+        } else if (newViews > 100 && newViews % 100 === 0) {
+            shouldNotify = true;
+        }
+
+        if (shouldNotify) {
+            await this.createNotification(
+                listing.seller_id,
+                'view_milestone',
+                'Listing Milestone Reached! 🚀',
+                `Your listing at "${listing.address}" has reached ${newViews} views!`,
+                `/dashboard/seller`
+            );
+        }
     }
 
-    if (shouldNotify) {
-        await this.createNotification(
-            listing.seller_id,
-            'view_milestone',
-            'Listing Milestone Reached! 🚀',
-            `Your listing at "${listing.address}" has reached ${newViews} views!`,
-            `/dashboard/seller`
-        );
-    }
 }
 
 export const store = new Store();
