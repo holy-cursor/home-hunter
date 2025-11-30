@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { store, Listing, User } from "@/lib/store";
-import { MapPin, ArrowLeft, MessageCircle, Check, DollarSign, Home as HomeIcon, Sparkles, Star, Loader2 } from "lucide-react";
+import { MapPin, ArrowLeft, MessageCircle, Check, DollarSign, Home as HomeIcon, Sparkles, Star, Loader2, Flag, X } from "lucide-react";
 
 export default function ApartmentDetails() {
     const router = useRouter();
@@ -16,6 +16,12 @@ export default function ApartmentDetails() {
     const [isInterested, setIsInterested] = useState(false);
     const [activeImage, setActiveImage] = useState(0);
     const [isLoading, setIsLoading] = useState(true);
+
+    // Report Modal State
+    const [showReportModal, setShowReportModal] = useState(false);
+    const [reportReason, setReportReason] = useState("");
+    const [reportDetails, setReportDetails] = useState("");
+    const [isReporting, setIsReporting] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -52,6 +58,27 @@ export default function ApartmentDetails() {
         if (chat) {
             router.push(`/dashboard/buyer/chat/${chat.id}`);
         }
+    };
+
+    const handleReportSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        if (!user || !listing) {
+            alert("Please login to report a listing.");
+            return;
+        }
+
+        setIsReporting(true);
+        const { error } = await store.submitReport(listing.id, user.id, reportReason, reportDetails);
+
+        if (!error) {
+            alert("Report submitted successfully. We will review it shortly.");
+            setShowReportModal(false);
+            setReportReason("");
+            setReportDetails("");
+        } else {
+            alert("Failed to submit report. Please try again.");
+        }
+        setIsReporting(false);
     };
 
     if (isLoading) return <div className="min-h-screen flex items-center justify-center"><Loader2 className="animate-spin text-emerald-600" size={32} /></div>;
@@ -179,8 +206,8 @@ export default function ApartmentDetails() {
                                 onClick={handleInterested}
                                 disabled={isInterested}
                                 className={`w-full flex items-center justify-center gap-2 py-4 px-6 rounded-xl font-semibold shadow-lg transition-all ${isInterested
-                                        ? 'bg-emerald-100 text-emerald-700 cursor-default'
-                                        : 'bg-emerald-600 hover:bg-emerald-700 text-white hover:shadow-xl hover:scale-105'
+                                    ? 'bg-emerald-100 text-emerald-700 cursor-default'
+                                    : 'bg-emerald-600 hover:bg-emerald-700 text-white hover:shadow-xl hover:scale-105'
                                     }`}
                             >
                                 {isInterested ? (
@@ -219,10 +246,79 @@ export default function ApartmentDetails() {
                             </ul>
                         </div>
 
+                        {/* Report Button */}
+                        <button
+                            onClick={() => setShowReportModal(true)}
+                            className="w-full py-3 text-red-500 hover:bg-red-50 rounded-xl text-sm font-medium transition-colors flex items-center justify-center gap-2"
+                        >
+                            <Flag size={16} />
+                            Report this listing
+                        </button>
+
                     </div>
                 </div>
 
             </div>
+
+            {/* Report Modal */}
+            {showReportModal && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl animate-in fade-in zoom-in duration-200">
+                        <div className="flex justify-between items-center mb-6">
+                            <h3 className="text-xl font-bold text-gray-900">Report Listing</h3>
+                            <button onClick={() => setShowReportModal(false)} className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                                <X size={20} className="text-gray-500" />
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleReportSubmit} className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Reason</label>
+                                <select
+                                    required
+                                    value={reportReason}
+                                    onChange={(e) => setReportReason(e.target.value)}
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none transition-all appearance-none bg-white"
+                                >
+                                    <option value="">Select a reason</option>
+                                    <option value="Fake Listing">Fake Listing</option>
+                                    <option value="Scam Attempt">Scam Attempt</option>
+                                    <option value="Duplicate">Duplicate Listing</option>
+                                    <option value="Inappropriate Content">Inappropriate Content</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Details</label>
+                                <textarea
+                                    required
+                                    rows={4}
+                                    value={reportDetails}
+                                    onChange={(e) => setReportDetails(e.target.value)}
+                                    className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none transition-all resize-none"
+                                    placeholder="Please provide more details..."
+                                />
+                            </div>
+
+                            <button
+                                type="submit"
+                                disabled={isReporting}
+                                className="w-full py-3 bg-red-600 text-white rounded-xl font-bold hover:bg-red-700 transition-colors disabled:opacity-70 flex items-center justify-center gap-2"
+                            >
+                                {isReporting ? (
+                                    <>
+                                        <Loader2 className="animate-spin" size={20} />
+                                        Submitting...
+                                    </>
+                                ) : (
+                                    'Submit Report'
+                                )}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

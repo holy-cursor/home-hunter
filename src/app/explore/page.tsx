@@ -129,13 +129,13 @@ export default function Explore() {
                                 <>
                                     <Link
                                         href="/dashboard/buyer"
-                                        className="hidden sm:flex items-center gap-2 text-slate-600 hover:text-[#002147] transition-colors text-sm font-medium group"
+                                        className="flex items-center gap-2 text-slate-600 hover:text-[#002147] transition-colors text-sm font-medium group"
                                     >
                                         <div className="relative">
                                             <MessageSquare size={20} className="group-hover:scale-110 transition-transform" />
                                             <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
                                         </div>
-                                        <span>Messages</span>
+                                        <span className="hidden sm:inline">Messages</span>
                                     </Link>
 
                                     <div className="flex items-center gap-3 pl-6 border-l border-slate-200">

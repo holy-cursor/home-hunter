@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { store, User, Listing, Chat } from "@/lib/store";
-import { Plus, MessageCircle, Home, Trash2, LogOut, TrendingUp, Users, Loader2, ArrowRight, Shield } from "lucide-react";
+import { Plus, MessageCircle, Home, Trash2, LogOut, TrendingUp, Users, Loader2, ArrowRight, Shield, Bell } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function SellerDashboard() {
@@ -12,6 +12,9 @@ export default function SellerDashboard() {
     const [listings, setListings] = useState<Listing[]>([]);
     const [chats, setChats] = useState<Chat[]>([]);
     const [isLoading, setIsLoading] = useState(true);
+
+    const [notifications, setNotifications] = useState<any[]>([]);
+    const [showNotifications, setShowNotifications] = useState(false);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -28,10 +31,36 @@ export default function SellerDashboard() {
             const userChats = await store.getChats(currentUser.id);
             setChats(userChats);
 
+            const userNotifications = await store.getNotifications(currentUser.id);
+            setNotifications(userNotifications);
+
             setIsLoading(false);
         };
         fetchData();
     }, [router]);
+
+    const handleNotificationClick = async (notification: any) => {
+        if (!notification.isRead) {
+            await store.markNotificationRead(notification.id);
+            setNotifications(notifications.map(n => n.id === notification.id ? { ...n, isRead: true } : n));
+        }
+        if (notification.link) {
+            router.push(notification.link);
+            setShowNotifications(false);
+        }
+    };
+
+    const markAllRead = async () => {
+        // Optimistic update
+        const unread = notifications.filter(n => !n.isRead);
+        setNotifications(notifications.map(n => ({ ...n, isRead: true })));
+
+        for (const n of unread) {
+            await store.markNotificationRead(n.id);
+        }
+    };
+
+    const unreadNotifications = notifications.filter(n => !n.isRead).length;
 
     const handleDeleteListing = async (listingId: string) => {
         if (confirm("Are you sure you want to delete this listing?")) {
@@ -63,6 +92,59 @@ export default function SellerDashboard() {
                         </div>
 
                         <div className="flex items-center gap-4">
+                            {/* Notifications */}
+                            <div className="relative">
+                                <button
+                                    onClick={() => setShowNotifications(!showNotifications)}
+                                    className="relative p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                                >
+                                    <Bell size={20} />
+                                    {unreadNotifications > 0 && (
+                                        <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
+                                    )}
+                                </button>
+
+                                {showNotifications && (
+                                    <div className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-50 animate-in fade-in zoom-in duration-200">
+                                        <div className="p-4 border-b border-gray-100 flex justify-between items-center">
+                                            <h3 className="font-bold text-[#002147]">Notifications</h3>
+                                            {unreadNotifications > 0 && (
+                                                <button onClick={markAllRead} className="text-xs text-blue-600 hover:text-blue-700 font-medium">
+                                                    Mark all read
+                                                </button>
+                                            )}
+                                        </div>
+                                        <div className="max-h-96 overflow-y-auto">
+                                            {notifications.length === 0 ? (
+                                                <div className="p-8 text-center text-gray-500">
+                                                    <Bell className="w-8 h-8 mx-auto mb-2 text-gray-300" />
+                                                    <p className="text-sm">No notifications</p>
+                                                </div>
+                                            ) : (
+                                                notifications.map(n => (
+                                                    <div
+                                                        key={n.id}
+                                                        onClick={() => handleNotificationClick(n)}
+                                                        className={`p-4 border-b border-gray-50 hover:bg-gray-50 transition-colors cursor-pointer ${!n.isRead ? 'bg-blue-50/50' : ''}`}
+                                                    >
+                                                        <div className="flex gap-3">
+                                                            <div className={`mt-1 p-1.5 rounded-full shrink-0 ${n.type === 'view_milestone' ? 'bg-amber-100 text-amber-600' : n.type === 'new_message' ? 'bg-blue-100 text-blue-600' : 'bg-gray-100 text-gray-600'}`}>
+                                                                {n.type === 'view_milestone' ? <TrendingUp size={14} /> : n.type === 'new_message' ? <MessageCircle size={14} /> : <Bell size={14} />}
+                                                            </div>
+                                                            <div>
+                                                                <h4 className={`text-sm font-bold mb-0.5 ${!n.isRead ? 'text-[#002147]' : 'text-gray-700'}`}>{n.title}</h4>
+                                                                <p className="text-xs text-gray-500 line-clamp-2 mb-1.5">{n.content}</p>
+                                                                <span className="text-[10px] text-gray-400">{new Date(n.createdAt).toLocaleDateString()}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                ))
+                                            )}
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+
                             {user.isAdmin && (
                                 <Link
                                     href="/admin"
@@ -121,9 +203,9 @@ export default function SellerDashboard() {
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="flex flex-col lg:grid lg:grid-cols-3 gap-8">
                     {/* Main Content - Listings */}
-                    <div className="lg:col-span-2 space-y-6">
+                    <div className="lg:col-span-2 space-y-6 order-2 lg:order-1">
                         <div className="flex items-center justify-between">
                             <h2 className="text-xl font-bold text-[#002147]">Your Listings</h2>
                             <Link href="/dashboard/seller/add" className="flex items-center gap-2 bg-[#002147] text-white px-4 py-2 rounded-lg hover:bg-[#001835] transition-colors shadow-sm">
@@ -185,7 +267,7 @@ export default function SellerDashboard() {
                     </div>
 
                     {/* Sidebar - Messages */}
-                    <div className="space-y-6">
+                    <div className="space-y-6 order-1 lg:order-2">
                         <div className="flex items-center justify-between">
                             <h2 className="text-xl font-bold text-[#002147]">Recent Messages</h2>
                         </div>

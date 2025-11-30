@@ -114,7 +114,7 @@ export default function BuyerDashboard() {
                     </div>
                 </div>
 
-                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden overflow-x-auto">
                     <div className="divide-y divide-slate-100">
                         {chats.length === 0 ? (
                             <div className="px-6 py-16 text-center">

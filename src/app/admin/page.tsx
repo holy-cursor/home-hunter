@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { store, User } from "@/lib/store";
-import { Users, Home as HomeIcon, MessageSquare, TrendingUp, Shield, Activity, Loader2, LogOut, ArrowRight } from "lucide-react";
+import { Users, Home as HomeIcon, MessageSquare, TrendingUp, Shield, Activity, Loader2, LogOut, ArrowRight, Flag } from "lucide-react";
 import Link from "next/link";
 
 export default function AdminDashboard() {
@@ -146,7 +146,7 @@ export default function AdminDashboard() {
 
                 {/* Quick Actions */}
                 <h2 className="text-lg font-bold text-[#002147] mb-4">Management</h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                     <Link
                         href="/admin/users"
                         className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm hover:shadow-lg hover:border-[#002147]/20 transition-all group"
@@ -190,6 +190,22 @@ export default function AdminDashboard() {
                             <div className="flex-1">
                                 <h3 className="font-bold text-[#002147]">Listing Management</h3>
                                 <p className="text-sm text-gray-500">Manage property listings</p>
+                            </div>
+                            <ArrowRight className="text-gray-300 group-hover:text-[#002147] transition-colors" />
+                        </div>
+                    </Link>
+
+                    <Link
+                        href="/admin/reports"
+                        className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm hover:shadow-lg hover:border-[#002147]/20 transition-all group"
+                    >
+                        <div className="flex items-center gap-4">
+                            <div className="p-3 bg-red-50 rounded-xl group-hover:bg-[#002147] transition-colors">
+                                <Flag className="w-6 h-6 text-red-600 group-hover:text-white" />
+                            </div>
+                            <div className="flex-1">
+                                <h3 className="font-bold text-[#002147]">Reports</h3>
+                                <p className="text-sm text-gray-500">View reported listings</p>
                             </div>
                             <ArrowRight className="text-gray-300 group-hover:text-[#002147] transition-colors" />
                         </div>

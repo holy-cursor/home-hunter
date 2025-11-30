@@ -303,6 +303,34 @@ class Store {
             .select()
             .single();
 
+        if (!error && data) {
+            // Get chat details to find recipient
+            const { data: chat } = await supabase
+                .from('chats')
+                .select('buyer_id, seller_id, listing_id')
+                .eq('id', chatId)
+                .single();
+
+            if (chat) {
+                // Determine recipient (if sender is buyer, notify seller; if sender is seller, notify buyer)
+                // Requirement says "When a buyer sends the first message... notify agent".
+                // We'll notify on every message for now as requested "new message request to check"
+                const recipientId = senderId === chat.buyer_id ? chat.seller_id : chat.buyer_id;
+
+                // Only notify if sender is buyer (notifying agent) as per request "agents notifications... new message request"
+                // But good UX is bidirectional. Let's stick to request: Agent notifications.
+                if (senderId === chat.buyer_id) {
+                    await this.createNotification(
+                        recipientId,
+                        'new_message',
+                        'New Message Received 💬',
+                        'You have a new message from a potential buyer.',
+                        `/dashboard/seller/chat/${chatId}`
+                    );
+                }
+            }
+        }
+
         return { message: data, error };
     }
 
@@ -466,6 +494,41 @@ class Store {
             });
     }
 
+    // Reports
+    async submitReport(listingId: string, reporterId: string, reason: string, details: string) {
+        const { error } = await supabase
+            .from('reports')
+            .insert({
+                listing_id: listingId,
+                reporter_id: reporterId,
+                reason,
+                details,
+                status: 'pending'
+            });
+        return { error };
+    }
+
+    async getReports() {
+        const { data, error } = await supabase
+            .from('reports')
+            .select(`
+                *,
+                listing:listings(address, seller_id),
+                reporter:profiles(name, email)
+            `)
+            .order('created_at', { ascending: false });
+
+        return data || [];
+    }
+
+    async updateReportStatus(reportId: string, status: 'reviewed' | 'resolved') {
+        const { error } = await supabase
+            .from('reports')
+            .update({ status })
+            .eq('id', reportId);
+        return { error };
+    }
+
     async getAdminLogs(limit: number = 50) {
         const { data, error } = await supabase
             .from('admin_logs')
@@ -474,6 +537,100 @@ class Store {
             .limit(limit);
 
         return data || [];
+    }
+export interface Notification {
+    id: string;
+    userId: string;
+    type: 'view_milestone' | 'new_message' | 'system_alert';
+    title: string;
+    content: string;
+    link?: string;
+    isRead: boolean;
+    createdAt: string;
+}
+
+    // ... inside Store class ...
+
+    // Notifications
+    async getNotifications(userId: string) {
+    const { data, error } = await supabase
+        .from('notifications')
+        .select('*')
+        .eq('user_id', userId)
+        .order('created_at', { ascending: false })
+        .limit(20);
+
+    if (error || !data) return [];
+
+    return data.map(n => ({
+        id: n.id,
+        userId: n.user_id,
+        type: n.type,
+        title: n.title,
+        content: n.content,
+        link: n.link,
+        isRead: n.is_read,
+        createdAt: n.created_at
+    }));
+}
+
+    async markNotificationRead(notificationId: string) {
+    const { error } = await supabase
+        .from('notifications')
+        .update({ is_read: true })
+        .eq('id', notificationId);
+    return { error };
+}
+
+    async createNotification(userId: string, type: 'view_milestone' | 'new_message' | 'system_alert', title: string, content: string, link ?: string) {
+    const { error } = await supabase
+        .from('notifications')
+        .insert({
+            user_id: userId,
+            type,
+            title,
+            content,
+            link
+        });
+    return { error };
+}
+
+    async incrementListingViews(listingId: string) {
+    // 1. Get current views
+    const { data: listing } = await supabase
+        .from('listings')
+        .select('views, seller_id, address')
+        .eq('id', listingId)
+        .single();
+
+    if (!listing) return;
+
+    const newViews = (listing.views || 0) + 1;
+
+    // 2. Update views
+    await supabase
+        .from('listings')
+        .update({ views: newViews })
+        .eq('id', listingId);
+
+    // 3. Check Milestones (10, 50, 100, then every 100)
+    const milestones = [10, 50, 100];
+    let shouldNotify = false;
+
+    if (milestones.includes(newViews)) {
+        shouldNotify = true;
+    } else if (newViews > 100 && newViews % 100 === 0) {
+        shouldNotify = true;
+    }
+
+    if (shouldNotify) {
+        await this.createNotification(
+            listing.seller_id,
+            'view_milestone',
+            'Listing Milestone Reached! 🚀',
+            `Your listing at "${listing.address}" has reached ${newViews} views!`,
+            `/dashboard/seller`
+        );
     }
 }
 
