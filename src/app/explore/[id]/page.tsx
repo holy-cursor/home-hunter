@@ -89,17 +89,27 @@ export default function ApartmentDetails() {
 
             {/* Header */}
             <div className="bg-white/80 backdrop-blur-xl shadow-sm border-b border-gray-200/50 sticky top-0 z-10">
-                <div className="max-w-6xl mx-auto px-4 py-4 flex items-center gap-4">
-                    <button
-                        onClick={() => router.back()}
-                        className="p-2 hover:bg-gray-100 rounded-xl transition-all"
-                    >
-                        <ArrowLeft size={24} className="text-gray-700" />
-                    </button>
-                    <div>
-                        <h1 className="font-bold text-gray-900">Apartment Details</h1>
-                        <p className="text-xs text-gray-500">View property information</p>
+                <div className="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                        <button
+                            onClick={() => router.back()}
+                            className="p-2 hover:bg-gray-100 rounded-xl transition-all"
+                        >
+                            <ArrowLeft size={24} className="text-gray-700" />
+                        </button>
+                        <div>
+                            <h1 className="font-bold text-gray-900">Apartment Details</h1>
+                            <p className="text-xs text-gray-500">View property information</p>
+                        </div>
                     </div>
+
+                    <button
+                        onClick={() => setShowReportModal(true)}
+                        className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors md:hidden"
+                        title="Report Listing"
+                    >
+                        <Flag size={20} />
+                    </button>
                 </div>
             </div>
 
@@ -249,7 +259,7 @@ export default function ApartmentDetails() {
                         {/* Report Button */}
                         <button
                             onClick={() => setShowReportModal(true)}
-                            className="w-full py-3 text-red-500 hover:bg-red-50 rounded-xl text-sm font-medium transition-colors flex items-center justify-center gap-2"
+                            className="w-full py-3 text-red-600 bg-red-50 hover:bg-red-100 rounded-xl text-sm font-medium transition-colors flex items-center justify-center gap-2 border border-red-100"
                         >
                             <Flag size={16} />
                             Report this listing
