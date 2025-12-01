@@ -114,7 +114,7 @@ export default function BuyerDashboard() {
                     </div>
                 </div>
 
-                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden overflow-x-auto">
+                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                     <div className="divide-y divide-slate-100">
                         {chats.length === 0 ? (
                             <div className="px-6 py-16 text-center">
@@ -132,33 +132,80 @@ export default function BuyerDashboard() {
                                 </Link>
                             </div>
                         ) : (
-                            chats.map((chat) => (
-                                <div key={chat.id} className="p-6 hover:bg-slate-50 transition-colors group">
-                                    <div className="flex items-center justify-between">
-                                        <div className="flex items-center gap-4">
-                                            <div className="h-12 w-12 rounded-full bg-[#002147]/5 flex items-center justify-center overflow-hidden border border-[#002147]/10">
-                                                {chat.seller?.profilePic ? (
-                                                    <img src={chat.seller.profilePic} alt={chat.seller.name} className="h-full w-full object-cover" />
-                                                ) : (
-                                                    <span className="text-[#002147] font-bold text-lg">{chat.seller?.name?.[0]}</span>
+                            chats.map((chat) => {
+                                const lastMessage = chat.messages[chat.messages.length - 1];
+                                const isUnread = lastMessage && lastMessage.senderId !== user.id;
+
+                                return (
+                                    <Link
+                                        key={chat.id}
+                                        href={`/dashboard/buyer/chat/${chat.id}`}
+                                        className="block p-4 sm:p-6 hover:bg-slate-50 transition-colors group"
+                                    >
+                                        <div className="flex items-start gap-3 sm:gap-4">
+                                            {/* Avatar */}
+                                            <div className="relative flex-shrink-0">
+                                                <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-full bg-[#002147]/5 flex items-center justify-center overflow-hidden border-2 border-[#002147]/10 group-hover:border-[#002147]/30 transition-colors">
+                                                    {chat.seller?.profilePic ? (
+                                                        <img src={chat.seller.profilePic} alt={chat.seller.name} className="h-full w-full object-cover" />
+                                                    ) : (
+                                                        <span className="text-[#002147] font-bold text-lg sm:text-xl">{chat.seller?.name?.[0]}</span>
+                                                    )}
+                                                </div>
+                                                {isUnread && (
+                                                    <div className="absolute -top-1 -right-1 w-4 h-4 bg-[#FFC72C] border-2 border-white rounded-full"></div>
                                                 )}
                                             </div>
-                                            <div>
-                                                <p className="font-bold text-slate-900 group-hover:text-[#002147] transition-colors">{chat.seller?.name}</p>
-                                                <p className="text-sm text-slate-500 flex items-center gap-1">
-                                                    Regarding: <span className="font-medium text-slate-700">{chat.listing?.address}</span>
-                                                </p>
+
+                                            {/* Content */}
+                                            <div className="flex-1 min-w-0">
+                                                <div className="flex items-start justify-between gap-2 mb-1">
+                                                    <div className="flex-1 min-w-0">
+                                                        <p className={`font-bold text-slate-900 group-hover:text-[#002147] transition-colors truncate ${isUnread ? 'text-[#002147]' : ''}`}>
+                                                            {chat.seller?.name}
+                                                        </p>
+                                                        <p className="text-xs sm:text-sm text-slate-500 flex items-center gap-1 mt-0.5">
+                                                            <Home size={12} className="flex-shrink-0" />
+                                                            <span className="truncate">{chat.listing?.address}</span>
+                                                        </p>
+                                                    </div>
+                                                    {lastMessage && (
+                                                        <span className="text-xs text-slate-400 whitespace-nowrap flex-shrink-0">
+                                                            {new Date(lastMessage.timestamp).toLocaleDateString('en-US', {
+                                                                month: 'short',
+                                                                day: 'numeric'
+                                                            })}
+                                                        </span>
+                                                    )}
+                                                </div>
+
+                                                {/* Last Message Preview */}
+                                                {lastMessage && (
+                                                    <div className="flex items-center gap-2 mt-2">
+                                                        <p className={`text-sm flex-1 truncate ${isUnread ? 'font-medium text-slate-700' : 'text-slate-500'}`}>
+                                                            {lastMessage.senderId === user.id && (
+                                                                <span className="text-slate-400 mr-1">You:</span>
+                                                            )}
+                                                            {lastMessage.content}
+                                                        </p>
+                                                        <ArrowRight size={16} className="text-slate-300 group-hover:text-[#002147] transition-colors flex-shrink-0" />
+                                                    </div>
+                                                )}
+
+                                                {/* Message Count Badge */}
+                                                {chat.messages.length > 0 && (
+                                                    <div className="flex items-center gap-2 mt-2">
+                                                        <span className="inline-flex items-center gap-1 text-xs text-slate-400">
+                                                            <MessageSquare size={12} />
+                                                            {chat.messages.length} {chat.messages.length === 1 ? 'message' : 'messages'}
+                                                        </span>
+                                                    </div>
+                                                )}
                                             </div>
                                         </div>
-                                        <Link
-                                            href={`/dashboard/buyer/chat/${chat.id}`}
-                                            className="px-4 py-2 bg-white border border-slate-200 text-slate-700 hover:border-[#002147] hover:text-[#002147] rounded-lg text-sm font-medium transition-all shadow-sm"
-                                        >
-                                            Open Chat
-                                        </Link>
-                                    </div>
-                                </div>
-                            ))
+                                    </Link>
+                                );
+                            })
                         )}
                     </div>
                 </div>
