@@ -184,22 +184,22 @@ export default function Explore() {
             </header>
 
             {/* Filters Section */}
-            <div className="bg-white border-b border-slate-200 shadow-sm">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-                    <div className="flex flex-col md:flex-row gap-4 items-center">
-                        <div className="flex-1 w-full">
-                            <h1 className="text-2xl font-bold text-[#002147]">Explore Apartments</h1>
-                            <p className="text-slate-500 text-sm">Find your perfect student home in Ife</p>
+            <div className="bg-white border-b border-slate-200 shadow-sm sticky top-[73px] z-40">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+                    <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+                        <div className="hidden md:block">
+                            <h1 className="text-xl font-bold text-[#002147]">Explore Apartments</h1>
+                            <p className="text-slate-500 text-xs">Find your perfect student home in Ife</p>
                         </div>
 
                         <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
                             {/* Location Filter */}
-                            <div className="relative min-w-[200px]">
-                                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#002147]" size={18} />
+                            <div className="relative min-w-[200px] group">
+                                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 group-hover:text-[#002147] transition-colors" size={18} />
                                 <select
                                     value={locationFilter}
                                     onChange={(e) => setLocationFilter(e.target.value)}
-                                    className="w-full pl-10 pr-8 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#002147] focus:border-[#002147] transition-all appearance-none cursor-pointer text-sm font-medium text-slate-700 hover:bg-slate-100"
+                                    className="w-full pl-10 pr-8 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#002147] focus:border-[#002147] transition-all appearance-none cursor-pointer text-sm font-medium text-slate-700 hover:bg-slate-100 hover:border-slate-300"
                                 >
                                     {LOCATIONS.map(loc => (
                                         <option key={loc} value={loc}>{loc}</option>
@@ -211,14 +211,14 @@ export default function Explore() {
                             </div>
 
                             {/* Price Filter */}
-                            <div className="relative min-w-[180px]">
-                                <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-[#002147]" size={18} />
+                            <div className="relative min-w-[180px] group">
+                                <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 group-hover:text-[#002147] transition-colors" size={18} />
                                 <input
                                     type="number"
                                     placeholder="Max Price (₦)"
                                     value={maxPrice}
                                     onChange={(e) => setMaxPrice(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#002147] focus:border-[#002147] transition-all text-sm font-medium text-slate-700 placeholder-slate-400 hover:bg-slate-100"
+                                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#002147] focus:border-[#002147] transition-all text-sm font-medium text-slate-700 placeholder-slate-400 hover:bg-slate-100 hover:border-slate-300"
                                 />
                             </div>
                         </div>
@@ -254,7 +254,7 @@ export default function Explore() {
                             <div
                                 key={listing.id}
                                 onClick={() => handleListingClick(listing.id)}
-                                className="group bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-xl hover:shadow-[#002147]/5 hover:border-[#002147]/20 transition-all duration-300 flex flex-col h-full cursor-pointer"
+                                className="group bg-white rounded-2xl border border-slate-200 overflow-hidden hover:shadow-xl hover:shadow-[#002147]/10 hover:border-[#002147]/30 transition-all duration-300 flex flex-col h-full cursor-pointer relative"
                             >
                                 {/* Image */}
                                 <div className="aspect-[4/3] bg-slate-100 relative overflow-hidden">
@@ -265,20 +265,33 @@ export default function Explore() {
                                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                                         />
                                     ) : (
-                                        <div className="flex items-center justify-center h-full">
+                                        <div className="flex items-center justify-center h-full bg-slate-50">
                                             <Home className="w-12 h-12 text-slate-300" />
                                         </div>
                                     )}
 
-                                    <div className="absolute top-4 right-4 px-3 py-1.5 bg-white/95 backdrop-blur-md rounded-lg shadow-sm border border-white/20">
-                                        <span className="text-sm font-bold text-[#002147]">₦{listing.price.toLocaleString()}</span>
+                                    {/* Price Badge */}
+                                    <div className="absolute top-4 right-4">
+                                        <div className="px-3 py-1.5 bg-[#002147] text-white rounded-lg shadow-lg flex items-center gap-1">
+                                            <span className="text-xs font-medium">₦</span>
+                                            <span className="text-sm font-bold">{listing.price.toLocaleString()}</span>
+                                        </div>
                                     </div>
 
-                                    <div className="absolute inset-0 bg-gradient-to-t from-[#002147]/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                    {/* New Badge (if created within 7 days) */}
+                                    {listing.createdAt && new Date(listing.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) && (
+                                        <div className="absolute top-4 left-4">
+                                            <div className="px-2.5 py-1 bg-[#FFC72C] text-[#002147] rounded-md shadow-md">
+                                                <span className="text-xs font-bold uppercase tracking-wider">New</span>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <div className="absolute inset-0 bg-gradient-to-t from-[#002147]/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                                     {!user && (
-                                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                            <div className="bg-white/90 backdrop-blur-sm px-4 py-2 rounded-lg shadow-lg flex items-center gap-2">
+                                        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 backdrop-blur-[2px]">
+                                            <div className="bg-white/95 px-4 py-2 rounded-lg shadow-xl flex items-center gap-2 transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
                                                 <Lock className="w-4 h-4 text-[#002147]" />
                                                 <span className="text-sm font-bold text-[#002147]">Login to View</span>
                                             </div>
@@ -288,23 +301,26 @@ export default function Explore() {
 
                                 {/* Content */}
                                 <div className="p-5 flex flex-col flex-1">
-                                    <div className="flex items-start justify-between gap-2 mb-2">
+                                    <div className="mb-3">
+                                        <div className="flex items-center text-xs font-medium text-[#FFC72C] mb-1">
+                                            <MapPin size={12} className="mr-1" />
+                                            <span className="uppercase tracking-wide">{listing.location}</span>
+                                        </div>
                                         <h3 className="text-lg font-bold text-slate-900 line-clamp-1 group-hover:text-[#002147] transition-colors">
                                             {listing.address}
                                         </h3>
                                     </div>
 
-                                    <div className="flex items-center text-sm text-slate-500 mb-4">
-                                        <MapPin size={16} className="mr-1.5 text-[#FFC72C]" />
-                                        <span>{listing.location}</span>
-                                    </div>
+                                    <p className="text-sm text-slate-500 line-clamp-2 mb-4 flex-1">
+                                        {listing.description}
+                                    </p>
 
                                     <div className="mt-auto pt-4 border-t border-slate-100 flex items-center justify-between">
-                                        <span className="text-xs font-bold text-[#002147] bg-[#002147]/5 px-2.5 py-1 rounded-md">
+                                        <span className="text-xs font-bold text-[#002147] group-hover:underline decoration-[#FFC72C] underline-offset-4 transition-all">
                                             {user ? "View Details" : "Login to View"}
                                         </span>
-                                        <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-[#FFC72C] transition-colors">
-                                            <ArrowRight size={16} className="text-slate-400 group-hover:text-[#002147] transition-colors" />
+                                        <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-[#002147] transition-colors">
+                                            <ArrowRight size={16} className="text-slate-400 group-hover:text-white transition-colors" />
                                         </div>
                                     </div>
                                 </div>
