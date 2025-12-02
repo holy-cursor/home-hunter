@@ -116,15 +116,15 @@ export default function Explore() {
             {/* Header */}
             <header className="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-between items-center py-4">
+                    <div className="flex justify-between items-center py-3 md:py-4">
                         <Link href="/" className="flex items-center gap-2 group">
-                            <div className="w-10 h-10 bg-[#002147] rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
-                                <Home className="w-5 h-5 text-[#FFC72C]" />
+                            <div className="w-8 h-8 md:w-10 md:h-10 bg-[#002147] rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
+                                <Home className="w-4 h-4 md:w-5 md:h-5 text-[#FFC72C]" />
                             </div>
-                            <span className="text-xl font-bold text-[#002147] tracking-tight">House Hunter</span>
+                            <span className="text-lg md:text-xl font-bold text-[#002147] tracking-tight">House Hunter</span>
                         </Link>
 
-                        <div className="flex items-center gap-6">
+                        <div className="flex items-center gap-4 md:gap-6">
                             {user ? (
                                 <>
                                     <Link
@@ -138,13 +138,13 @@ export default function Explore() {
                                         <span className="hidden sm:inline">Messages</span>
                                     </Link>
 
-                                    <div className="flex items-center gap-3 pl-6 border-l border-slate-200">
+                                    <div className="flex items-center gap-3 pl-4 md:pl-6 border-l border-slate-200">
                                         <div className="flex items-center gap-3">
                                             <div className="text-right hidden md:block">
                                                 <div className="text-sm font-bold text-[#002147]">{user.name}</div>
                                                 <div className="text-xs text-slate-500">Student</div>
                                             </div>
-                                            <div className="h-10 w-10 rounded-full bg-[#002147]/10 border border-[#002147]/20 overflow-hidden">
+                                            <div className="h-8 w-8 md:h-10 md:w-10 rounded-full bg-[#002147]/10 border border-[#002147]/20 overflow-hidden">
                                                 {user.profilePic ? (
                                                     <img src={user.profilePic} alt="Profile" className="h-full w-full object-cover" />
                                                 ) : (
@@ -155,15 +155,15 @@ export default function Explore() {
 
                                         <button
                                             onClick={async () => { await store.logout(); router.push('/'); }}
-                                            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all ml-2"
+                                            className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all ml-1 md:ml-2"
                                             title="Logout"
                                         >
-                                            <LogOut size={20} />
+                                            <LogOut size={18} className="md:w-5 md:h-5" />
                                         </button>
                                     </div>
                                 </>
                             ) : (
-                                <div className="flex items-center gap-4">
+                                <div className="flex items-center gap-3 md:gap-4">
                                     <Link
                                         href="/auth/login/buyer"
                                         className="text-sm font-bold text-[#002147] hover:text-[#FFC72C] transition-colors"
@@ -172,7 +172,7 @@ export default function Explore() {
                                     </Link>
                                     <Link
                                         href="/auth/signup/buyer"
-                                        className="px-5 py-2.5 bg-[#FFC72C] text-[#002147] text-sm font-bold rounded-full hover:bg-[#ffcf4d] transition-all shadow-lg shadow-[#FFC72C]/20 hover:-translate-y-0.5"
+                                        className="px-4 py-2 md:px-5 md:py-2.5 bg-[#FFC72C] text-[#002147] text-xs md:text-sm font-bold rounded-full hover:bg-[#ffcf4d] transition-all shadow-lg shadow-[#FFC72C]/20 hover:-translate-y-0.5"
                                     >
                                         Get Started
                                     </Link>
@@ -184,41 +184,41 @@ export default function Explore() {
             </header>
 
             {/* Filters Section */}
-            <div className="bg-white border-b border-slate-200 shadow-sm sticky top-[73px] z-40">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-                    <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-                        <div className="hidden md:block">
-                            <h1 className="text-xl font-bold text-[#002147]">Explore Apartments</h1>
+            <div className="bg-white border-b border-slate-200 shadow-sm sticky top-[60px] md:top-[73px] z-40">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3 md:py-4">
+                    <div className="flex flex-col md:flex-row gap-3 md:gap-4 items-center justify-between">
+                        <div className="w-full md:w-auto">
+                            <h1 className="text-lg md:text-xl font-bold text-[#002147]">Explore Apartments</h1>
                             <p className="text-slate-500 text-xs">Find your perfect student home in Ife</p>
                         </div>
 
-                        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                        <div className="grid grid-cols-2 sm:flex sm:flex-row gap-2 md:gap-3 w-full md:w-auto">
                             {/* Location Filter */}
-                            <div className="relative min-w-[200px] group">
-                                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 group-hover:text-[#002147] transition-colors" size={18} />
+                            <div className="relative min-w-0 md:min-w-[200px] group">
+                                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 group-hover:text-[#002147] transition-colors" size={16} />
                                 <select
                                     value={locationFilter}
                                     onChange={(e) => setLocationFilter(e.target.value)}
-                                    className="w-full pl-10 pr-8 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#002147] focus:border-[#002147] transition-all appearance-none cursor-pointer text-sm font-medium text-slate-700 hover:bg-slate-100 hover:border-slate-300"
+                                    className="w-full pl-9 pr-8 py-2 md:py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#002147] focus:border-[#002147] transition-all appearance-none cursor-pointer text-xs md:text-sm font-medium text-slate-700 hover:bg-slate-100 hover:border-slate-300 truncate"
                                 >
                                     {LOCATIONS.map(loc => (
                                         <option key={loc} value={loc}>{loc}</option>
                                     ))}
                                 </select>
-                                <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
-                                    <Filter size={14} className="text-slate-400" />
+                                <div className="absolute right-2 md:right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
+                                    <Filter size={12} className="text-slate-400" />
                                 </div>
                             </div>
 
                             {/* Price Filter */}
-                            <div className="relative min-w-[180px] group">
-                                <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 group-hover:text-[#002147] transition-colors" size={18} />
+                            <div className="relative min-w-0 md:min-w-[180px] group">
+                                <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 group-hover:text-[#002147] transition-colors" size={16} />
                                 <input
                                     type="number"
-                                    placeholder="Max Price (₦)"
+                                    placeholder="Max Price"
                                     value={maxPrice}
                                     onChange={(e) => setMaxPrice(e.target.value)}
-                                    className="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#002147] focus:border-[#002147] transition-all text-sm font-medium text-slate-700 placeholder-slate-400 hover:bg-slate-100 hover:border-slate-300"
+                                    className="w-full pl-9 pr-4 py-2 md:py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-[#002147] focus:border-[#002147] transition-all text-xs md:text-sm font-medium text-slate-700 placeholder-slate-400 hover:bg-slate-100 hover:border-slate-300"
                                 />
                             </div>
                         </div>
