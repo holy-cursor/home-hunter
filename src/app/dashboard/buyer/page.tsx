@@ -152,11 +152,6 @@ export default function BuyerDashboard() {
                                                         <span className="text-white font-bold text-xl">{chat.seller?.name?.[0]}</span>
                                                     )}
                                                 </div>
-                                                {unreadCount > 0 && (
-                                                    <div className="absolute -top-1 -right-1 h-6 w-6 bg-red-500 rounded-full flex items-center justify-center border-2 border-white shadow-sm">
-                                                        <span className="text-white text-xs font-bold">{unreadCount > 9 ? '9+' : unreadCount}</span>
-                                                    </div>
-                                                )}
                                             </div>
 
                                             {/* Content */}
