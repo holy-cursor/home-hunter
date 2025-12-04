@@ -6,7 +6,7 @@ import { store, User } from "@/lib/store";
 import { ArrowLeft, Shield, Ban, CheckCircle, Loader2, Search, UserX } from "lucide-react";
 import Link from "next/link";
 
-export const dynamic = 'force-dynamic';
+
 
 export default function AdminUsers() {
     const router = useRouter();

@@ -6,7 +6,7 @@ import { store, User } from "@/lib/store";
 import { Users, Home as HomeIcon, MessageSquare, TrendingUp, Shield, Activity, Loader2, LogOut, ArrowRight, Flag } from "lucide-react";
 import Link from "next/link";
 
-export const dynamic = 'force-dynamic';
+
 
 export default function AdminDashboard() {
     const router = useRouter();
