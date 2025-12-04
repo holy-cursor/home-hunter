@@ -15,7 +15,7 @@ export default function LandingPage() {
         {/* Background Image */}
         <div className="absolute inset-0 z-0">
           <img
-            src="https://images.unsplash.com/photo-1555854877-bab0e564b8d5?q=80&w=2069&auto=format&fit=crop"
+            src="/hero-bg.jpg"
             alt="Modern Student Accommodation"
             className="w-full h-full object-cover"
           />
@@ -191,12 +191,12 @@ export default function LandingPage() {
         {/* Horizontal Scroll Container */}
         <div className="flex overflow-x-auto pb-12 px-4 sm:px-6 lg:px-8 gap-6 no-scrollbar snap-x snap-mandatory max-w-7xl mx-auto">
           {[
-            { name: 'Asherifa', img: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?q=80&w=2070&auto=format&fit=crop' },
-            { name: 'Damico', img: 'https://images.unsplash.com/photo-1600596542815-2250c385e311?q=80&w=2068&auto=format&fit=crop' },
-            { name: 'Mayfair', img: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?q=80&w=2070&auto=format&fit=crop' },
-            { name: 'Campus Gate', img: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?q=80&w=2070&auto=format&fit=crop' },
-            { name: 'Moremi Estate', img: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?q=80&w=2053&auto=format&fit=crop' },
-            { name: 'Parakin', img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?q=80&w=2070&auto=format&fit=crop' }
+            { name: 'Asherifa', img: '/locations/ife.jpg' },
+            { name: 'Damico', img: '/locations/ife.jpg' },
+            { name: 'Mayfair', img: '/locations/mayfair.jpg' },
+            { name: 'Campus Gate', img: '/locations/campus gate.jpg' },
+            { name: 'Moremi Estate', img: '/locations/ife.jpg' },
+            { name: 'Parakin', img: '/locations/ife.jpg' }
           ].map((location, index) => (
             <Link
               key={location.name}
