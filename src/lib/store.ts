@@ -57,13 +57,6 @@ export interface Notification {
 }
 
 class Store {
-    // Hardcoded admin credentials - add your email and password here
-    private ADMIN_CREDENTIALS = [
-        { email: 'adeyemidavid1507@gmail.com', password: 'admin123' },
-        // Add more admins below:
-        // { email: 'another@example.com', password: 'secure_password' },
-    ];
-
     // Auth
     async getCurrentUser(): Promise<User | null> {
         const { data: { user } } = await supabase.auth.getUser();
@@ -77,18 +70,8 @@ class Store {
 
         if (!profile) return null;
 
-        // Check if user email is in admin list
-        const isAdmin = this.ADMIN_CREDENTIALS.some(admin => admin.email === user.email);
-
-        // Sync admin status to DB if needed (crucial for RLS policies)
-        if (isAdmin && !profile.is_admin) {
-            const { error } = await supabase.from('profiles').update({ is_admin: true }).eq('id', user.id);
-            if (error) {
-                console.error("Failed to sync admin status to DB:", error);
-            } else {
-                profile.is_admin = true;
-            }
-        }
+        // Admin status is now strictly managed by the database profile
+        const isAdmin = profile.is_admin || false;
 
         return {
             id: profile.id,
