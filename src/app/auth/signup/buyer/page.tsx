@@ -66,7 +66,7 @@ export default function BuyerSignup() {
                         <div className="w-10 h-10 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/20">
                             <Home className="w-5 h-5 text-[#FFC72C]" />
                         </div>
-                        <span className="text-2xl font-bold tracking-tight">House Hunter</span>
+                        <span className="text-2xl font-bold tracking-tight">aparteh</span>
                     </Link>
 
                     <div className="max-w-md">
@@ -74,7 +74,7 @@ export default function BuyerSignup() {
                             Find your perfect student home in <span className="text-[#FFC72C]">Ile-Ife</span>.
                         </h1>
                         <p className="text-slate-300 text-lg mb-8 leading-relaxed">
-                            Join thousands of OAU students who trust House Hunter for safe, verified, and affordable off-campus accommodation.
+                            Join thousands of OAU students who trust aparteh for safe, verified, and affordable off-campus accommodation.
                         </p>
 
                         <div className="space-y-4 mb-12">
@@ -121,7 +121,7 @@ export default function BuyerSignup() {
                             <div className="w-8 h-8 bg-[#002147] rounded-lg flex items-center justify-center">
                                 <Home className="w-5 h-5 text-[#FFC72C]" />
                             </div>
-                            <span className="text-xl font-bold text-[#002147]">House Hunter</span>
+                            <span className="text-xl font-bold text-[#002147]">aparteh</span>
                         </Link>
                     </div>
 

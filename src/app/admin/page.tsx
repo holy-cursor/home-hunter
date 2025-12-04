@@ -53,7 +53,7 @@ export default function AdminDashboard() {
                             </div>
                             <div>
                                 <span className="text-xl font-bold text-[#002147] tracking-tight">Admin Dashboard</span>
-                                <p className="text-xs text-gray-500">House Hunter</p>
+                                <p className="text-xs text-gray-500">aparteh</p>
                             </div>
                         </div>
 
@@ -87,7 +87,7 @@ export default function AdminDashboard() {
             <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 <div className="mb-8">
                     <h1 className="text-2xl font-bold text-[#002147]">Platform Overview</h1>
-                    <p className="text-gray-500 text-sm">Monitor and manage House Hunter platform</p>
+                    <p className="text-gray-500 text-sm">Monitor and manage aparteh platform</p>
                 </div>
 
                 {/* Stats Grid */}

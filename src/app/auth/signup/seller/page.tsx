@@ -62,7 +62,7 @@ export default function SellerSignup() {
                         <div className="w-10 h-10 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/20">
                             <Home className="w-5 h-5 text-[#FFC72C]" />
                         </div>
-                        <span className="text-2xl font-bold tracking-tight">House Hunter</span>
+                        <span className="text-2xl font-bold tracking-tight">aparteh</span>
                     </Link>
 
                     <div className="max-w-md">
@@ -97,7 +97,7 @@ export default function SellerSignup() {
                         ))}
                     </div>
                     <p className="text-slate-200 mb-4 italic">
-                        "Since listing my properties on House Hunter, I've had 100% occupancy rates. The verification system builds trust instantly."
+                        "Since listing my properties on aparteh, I've had 100% occupancy rates. The verification system builds trust instantly."
                     </p>
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-[#FFC72C] rounded-full flex items-center justify-center text-[#002147] font-bold">A</div>
@@ -117,7 +117,7 @@ export default function SellerSignup() {
                             <div className="w-8 h-8 bg-[#002147] rounded-lg flex items-center justify-center">
                                 <Home className="w-5 h-5 text-[#FFC72C]" />
                             </div>
-                            <span className="text-xl font-bold text-[#002147]">House Hunter</span>
+                            <span className="text-xl font-bold text-[#002147]">aparteh</span>
                         </Link>
                     </div>
 

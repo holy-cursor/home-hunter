@@ -63,12 +63,12 @@ function BuyerLoginForm() {
                         <div className="w-10 h-10 bg-white/10 backdrop-blur-sm rounded-xl flex items-center justify-center border border-white/20">
                             <Home className="w-5 h-5 text-[#FFC72C]" />
                         </div>
-                        <span className="text-2xl font-bold tracking-tight">House Hunter</span>
+                        <span className="text-2xl font-bold tracking-tight">aparteh</span>
                     </Link>
 
                     <div className="max-w-md">
                         <h1 className="text-4xl font-bold mb-6 leading-tight">
-                            Welcome back to <span className="text-[#FFC72C]">House Hunter</span>.
+                            Welcome back to <span className="text-[#FFC72C]">aparteh</span>.
                         </h1>
                         <p className="text-slate-300 text-lg mb-8 leading-relaxed">
                             Log in to continue your search for the perfect off-campus accommodation in Ile-Ife.
@@ -98,7 +98,7 @@ function BuyerLoginForm() {
                         ))}
                     </div>
                     <p className="text-slate-200 mb-4 italic">
-                        "House Hunter made my house search so much easier. I found a great place near campus without any stress."
+                        "aparteh made my house search so much easier. I found a great place near campus without any stress."
                     </p>
                     <div className="flex items-center gap-3">
                         <div className="w-10 h-10 bg-[#FFC72C] rounded-full flex items-center justify-center text-[#002147] font-bold">S</div>
@@ -118,7 +118,7 @@ function BuyerLoginForm() {
                             <div className="w-8 h-8 bg-[#002147] rounded-lg flex items-center justify-center">
                                 <Home className="w-5 h-5 text-[#FFC72C]" />
                             </div>
-                            <span className="text-xl font-bold text-[#002147]">House Hunter</span>
+                            <span className="text-xl font-bold text-[#002147]">aparteh</span>
                         </Link>
                     </div>
 

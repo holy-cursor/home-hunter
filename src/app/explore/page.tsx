@@ -121,7 +121,7 @@ export default function Explore() {
                             <div className="w-8 h-8 md:w-10 md:h-10 bg-[#002147] rounded-xl flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
                                 <Home className="w-4 h-4 md:w-5 md:h-5 text-[#FFC72C]" />
                             </div>
-                            <span className="text-lg md:text-xl font-bold text-[#002147] tracking-tight">House Hunter</span>
+                            <span className="text-lg md:text-xl font-bold text-[#002147] tracking-tight">aparteh</span>
                         </Link>
 
                         <div className="flex items-center gap-4 md:gap-6">
